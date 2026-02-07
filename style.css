@@ -33,6 +33,54 @@ header h1 {
   margin-top: 0;
 }
 
+.header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.lang-switcher {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.lang-switcher a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #fafafa;
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+.lang-switcher a[aria-current="page"] {
+  background: #1a1a1a;
+  color: #ffffff;
+  border-color: #1a1a1a;
+}
+
+.lang-note {
+  margin: 8px 0 0;
+  color: var(--subtext);
+  font-size: 0.9rem;
+}
+
+.footer-links {
+  margin: 0 0 8px;
+}
+
+.footer-sep {
+  margin: 0 6px;
+  color: var(--subtext);
+}
+
 h2 {
   margin-top: 32px;
   border-bottom: 1px solid var(--border);
