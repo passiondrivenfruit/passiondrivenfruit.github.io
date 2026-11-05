@@ -3,7 +3,9 @@
 <main id="main-content" class="container">
   <section aria-labelledby="about-heading">
     <h2 id="about-heading">{{ copy.aboutHeading }}</h2>
-    <p>{{ copy.about }}</p>
+    {% for paragraph in copy.about %}
+    <p>{{ paragraph }}</p>
+    {% endfor %}
   </section>
 
   <section aria-labelledby="games-heading">
