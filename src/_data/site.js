@@ -15,7 +15,8 @@ module.exports = {
     privacy: { en: "/en/privacy.html", ko: "/ko/privacy.html", ja: "/ja/privacy.html", zh: "/zh/privacy.html" },
     legalTerms: "/ko/legal/terms.html",
     legalPrivacy: "/ko/legal/privacy.html",
-    pinballatroConsent: "/ko/legal/pinballatro-consent.html"
+    pinfinityConsent: "/ko/legal/pinfinity-pinferno-consent.html",
+    pinballatroConsentAlias: "/ko/legal/pinballatro-consent.html"
   },
   copy: {
     en: {

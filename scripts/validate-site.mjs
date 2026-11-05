@@ -6,8 +6,9 @@ const languages = ["en", "ko", "ja", "zh"];
 const expectedPages = [
   "index.html", ...languages.map((lang) => `${lang}/index.html`),
   ...languages.flatMap((lang) => [`${lang}/Minesweeper.html`, `${lang}/privacy.html`]),
-  "ko/legal/terms.html", "ko/legal/privacy.html", "ko/legal/pinballatro-consent.html",
-  "ko/legal/draft-1/terms.html", "ko/legal/draft-1/privacy.html", "ko/legal/draft-1/pinballatro-consent.html"
+  "ko/legal/terms.html", "ko/legal/privacy.html", "ko/legal/pinballatro-consent.html", "ko/legal/pinfinity-pinferno-consent.html",
+  "ko/legal/draft-1/terms.html", "ko/legal/draft-1/privacy.html", "ko/legal/draft-1/pinballatro-consent.html",
+  "ko/legal/draft-2/terms.html", "ko/legal/draft-2/privacy.html", "ko/legal/draft-2/pinfinity-pinferno-consent.html"
 ];
 const problems = [];
 const check = (condition, message) => { if (!condition) problems.push(message); };
@@ -22,10 +23,16 @@ function getMeta(html, name) {
 }
 
 function expectedAlternates(page) {
-  if (page.includes("/legal/")) return { ko: page.includes("/draft-1/") ? `/${page}` : `/ko/legal/draft-1/${path.basename(page)}` };
+  if (page.includes("/legal/")) return { ko: expectedLegalCanonical(page) };
   const kind = page.endsWith("Minesweeper.html") ? "game" : page.endsWith("privacy.html") ? "privacy" : "home";
   if (kind === "home") return { ko: "/", en: "/en/index.html", ja: "/ja/index.html", zh: "/zh/index.html" };
   return Object.fromEntries(languages.map((lang) => [lang, `/${lang}/${kind === "game" ? "Minesweeper.html" : "privacy.html"}`]));
+}
+
+function expectedLegalCanonical(page) {
+  if (page.includes("/draft-1/") || page.includes("/draft-2/")) return `/${page}`;
+  if (page.endsWith("pinballatro-consent.html") || page.endsWith("pinfinity-pinferno-consent.html")) return "/ko/legal/draft-2/pinfinity-pinferno-consent.html";
+  return `/ko/legal/draft-2/${path.basename(page)}`;
 }
 
 for (const page of expectedPages) {
@@ -52,7 +59,7 @@ for (const page of expectedPages) {
   check(new RegExp(`<html\\s+lang=["']${lang}["']`, "i").test(html), `${page}: wrong or missing html lang`);
   check(/<title>[^<]+<\/title>/i.test(html), `${page}: missing title`);
   check(Boolean(getMeta(html, "description")), `${page}: missing meta description`);
-  const expectedCanonicalPath = page === "index.html" || page === "ko/index.html" ? "/" : page.startsWith("ko/legal/") && !page.includes("/draft-1/") ? `/ko/legal/draft-1/${path.basename(page)}` : `/${page}`;
+  const expectedCanonicalPath = page === "index.html" || page === "ko/index.html" ? "/" : page.startsWith("ko/legal/") ? expectedLegalCanonical(page) : `/${page}`;
   check(html.includes(`<link rel="canonical" href="https://pdf-studio.co.kr${expectedCanonicalPath}">`), `${page}: canonical URL is incorrect`);
   check(Boolean(getMeta(html, "og:title")) && Boolean(getMeta(html, "og:description")), `${page}: missing Open Graph title/description`);
   for (const [alternate, hrefPath] of Object.entries(alternatePaths)) {
@@ -68,6 +75,9 @@ for (const page of expectedPages) {
     check(/<meta name="robots" content="noindex, nofollow">/i.test(html), `${page}: legal draft must not be indexed`);
     check(html.includes("검토용 초안"), `${page}: legal draft notice is missing`);
     check(/<html\s+lang=["']ko["']/i.test(html), `${page}: legal source page must be Korean`);
+    if (page.includes("/draft-1/")) check(html.includes("PinBallatro"), `${page}: historical draft-1 snapshot changed its original project name`);
+    if (page.includes("/draft-2/") && page.includes("consent")) check(html.includes("Pinfinity Pinferno"), `${page}: current consent snapshot must use the public game name`);
+    if (!page.includes("/draft-1/") && page.includes("consent")) check(html.includes("Pinfinity Pinferno"), `${page}: current consent route must use the public game name`);
   }
   for (const image of html.matchAll(/<img\b[^>]*>/gi)) {
     const tag = image[0];
