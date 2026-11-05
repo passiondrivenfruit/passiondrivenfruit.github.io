@@ -1,0 +1,13 @@
+---
+permalink: sitemap.xml
+layout: false
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{% for url in site.urls %}  <url>
+    <loc>{{ site.origin }}{{ url.path }}</loc>
+    <changefreq>{{ url.changefreq }}</changefreq>
+    <priority>{{ url.priority }}</priority>
+  </url>
+{% endfor %}</urlset>

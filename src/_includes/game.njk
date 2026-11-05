@@ -1,0 +1,24 @@
+{% set copy = site.copy[language] %}
+{% set gamePaths = site.paths.game %}
+<main id="main-content" class="container game-page">
+  <img class="game-hero" src="/assets/header/minesweeper.webp" alt="" width="1200" height="675" fetchpriority="high" decoding="async">
+  <h1>{{ copy.gameTitle }}</h1>
+  <p class="game-intro">{{ copy.gameDescriptionFull }}</p>
+  <p><a class="button" href="{{ site.googlePlay }}" target="_blank" rel="noopener noreferrer">{{ copy.download }}</a></p>
+  <section>
+    <h2>{{ copy.aboutHeading }}</h2>
+    <p>{{ copy.aboutGame }}</p>
+  </section>
+  <section>
+    <h2>{{ copy.howToPlay }}</h2>
+    <p>{{ copy.howToPlayText }}</p>
+  </section>
+  <section>
+    <h2>{{ copy.features }}</h2>
+    <p>{{ copy.featuresText }}</p>
+  </section>
+  <section>
+    <h2>{{ copy.tips }}</h2>
+    <p>{{ copy.tipsText }}</p>
+  </section>
+</main>
