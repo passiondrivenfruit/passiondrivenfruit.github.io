@@ -26,7 +26,6 @@ The Korean pages under `/ko/legal/` are review drafts. They must not be connecte
 - Server [`docs/database_schema.md`](https://github.com/PassionDrivenFruit-Studio/PinBallatro_server/blob/main/docs/database_schema.md) documents guest and Google identities, an optional Google email field, profiles, game state, rankings, and social data.
 - PinBallatro [`AndroidManifest.xml`](https://github.com/PassionDrivenFruit-Studio/PinBallatro_Godot/blob/main/android/build/src/main/AndroidManifest.xml) integrates Google Play Games and Google Mobile Ads and declares `AD_ID`, `INTERNET`, and `ACCESS_NETWORK_STATE` permissions.
 - The [Minesweeper Korean privacy page](../src/_includes/privacy/ko.njk) describes no account/database operated by the developer and Google AdMob processing. This is game-specific and does not describe PinBallatro.
-- The existing Minesweeper privacy page describes no account/database operated by the developer and Google AdMob processing. This is game-specific and does not describe PinBallatro.
 
 ## Site paths
 

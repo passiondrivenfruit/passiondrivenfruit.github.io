@@ -13,7 +13,7 @@
 
   <h2>수집 항목</h2>
   <ul>
-    <li><strong>계정 및 인증:</strong> 사용자 식별자, 인증 방식(게스트 또는 Google), 제공자 식별값(게스트 기기 ID 또는 Google의 `sub`), 게스트 인증 요청의 `device_id`·`app_instance_id`. 서버 스키마에는 Google 이메일을 저장할 수 있는 선택 필드가 있으므로 실제 운영 저장 여부를 확정해야 합니다.</li>
+    <li><strong>계정 및 인증:</strong> 사용자 식별자, 인증 방식(게스트 또는 Google), 제공자 식별값(게스트 기기 식별자 또는 Google 계정 식별값 <code>sub</code>), 게스트 인증 요청의 <code>device_id</code>·<code>app_instance_id</code>. 서버 스키마에는 Google 이메일을 저장할 수 있는 선택 필드가 있으므로 실제 운영 저장 여부를 확정해야 합니다.</li>
     <li><strong>프로필 및 게임 데이터:</strong> 닉네임, 프로필 설정, 게임 진행·결과, 게임 내 재화와 아이템 상태, 순위 정보, 친구·길드 기능에 필요한 데이터. 스키마에는 일별 로그인 수·플레이 시간·진행도 요약과 상품 ID·스토어 거래 ID·영수증·구매 상태 항목도 있으므로 실제 운영 사용 여부를 확인해야 합니다.</li>
     <li><strong>동의 기록:</strong> 사용자 식별자, 약관·개인정보 안내 버전, 만 14세 이상 확인 여부, 동의 시각.</li>
     <li><strong>외부 SDK 데이터:</strong> Google Play Games와 AdMob SDK가 처리하는 항목은 실제 SDK 설정과 Google Play 신고를 확인해 구체적으로 추가해야 합니다. 현재 이 초안만으로 해당 데이터 항목을 확정할 수 없습니다.</li>
