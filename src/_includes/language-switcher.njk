@@ -1,0 +1,5 @@
+<nav class="lang-switcher" aria-label="{{ copy.languageLabel }}">
+  {% for item in site.locales %}
+  <a href="{{ pageLinks[item.code] }}" lang="{{ item.htmlLang }}"{% if item.code == language %} aria-current="page"{% endif %}>{{ item.short }}</a>
+  {% endfor %}
+</nav>

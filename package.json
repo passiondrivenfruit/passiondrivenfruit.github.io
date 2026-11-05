@@ -1,0 +1,15 @@
+{
+  "name": "passiondrivenfruit-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Localized static site built with Eleventy",
+  "scripts": {
+    "build": "npm run clean --silent && eleventy --quiet && node scripts/validate-site.mjs",
+    "start": "eleventy --serve",
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "check": "node scripts/validate-site.mjs"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.2"
+  }
+}

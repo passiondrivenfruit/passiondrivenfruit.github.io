@@ -1,0 +1,74 @@
+<!doctype html>
+{% set htmlLang = 'zh-CN' if language == 'zh' else language %}
+{% set ogType = 'product' if pageType == 'game' else 'website' %}
+{% set twitterCard = 'summary_large_image' if pageType == 'game' else 'summary' %}
+{% set copy = site.copy[language] %}
+<html lang="{{ htmlLang }}">
+{% set localizedPaths = site.paths[pageType] %}
+{% set homePaths = site.paths.home %}
+{% set privacyPaths = site.paths.privacy %}
+{% set pageLinks = localizedPaths %}
+{% if pageType == 'home' %}
+  {% set title = copy.homeTitle %}
+  {% set description = copy.homeDescription %}
+{% elif pageType == 'game' %}
+  {% set title = copy.gameTitle %}
+  {% set description = copy.gameDescriptionFull %}
+{% else %}
+  {% set title = copy.privacyTitle %}
+  {% set description = copy.privacyDescription %}
+{% endif %}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+  <meta name="description" content="{{ description }}">
+  <link rel="canonical" href="{{ site.origin }}{{ canonicalPath }}">
+  {% for item in site.locales %}
+  <link rel="alternate" hreflang="{{ item.htmlLang }}" href="{{ site.origin }}{{ localizedPaths[item.code] }}">
+  {% endfor %}
+  <link rel="alternate" hreflang="x-default" href="{{ site.origin }}{{ localizedPaths.en }}">
+  <meta property="og:type" content="{{ ogType }}">
+  <meta property="og:site_name" content="{{ site.name }}">
+  <meta property="og:title" content="{{ title }}">
+  <meta property="og:description" content="{{ description }}">
+  <meta property="og:url" content="{{ site.origin }}{{ canonicalPath }}">
+  {% if pageType == 'game' %}<meta property="og:image" content="{{ site.origin }}/assets/header/minesweeper.webp">{% endif %}
+  <meta name="twitter:card" content="{{ twitterCard }}">
+  <meta name="twitter:title" content="{{ title }}">
+  <meta name="twitter:description" content="{{ description }}">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">{{ copy.skipLink }}</a>
+  <header class="container site-header">
+    {% if pageType == 'home' %}
+    <div class="header-row">
+      <div class="brand">
+        <h1><a href="{{ homePaths[language] }}">{{ site.name }}</a></h1>
+        <p class="subtitle">{{ copy.subtitle }}</p>
+      </div>
+      {% include "language-switcher.njk" %}
+    </div>
+    {% elif pageType == 'game' %}
+    <div class="header-row">
+      <a class="brand-link" href="{{ homePaths[language] }}">{{ site.name }}</a>
+      {% include "language-switcher.njk" %}
+    </div>
+    {% else %}
+    <div class="header-row">
+      <h1>{{ copy.privacyTitle }}</h1>
+      {% include "language-switcher.njk" %}
+    </div>
+    {% endif %}
+  </header>
+  {{ content | safe }}
+  <footer class="container footer">
+    <nav class="footer-links" aria-label="{{ copy.footerLabel }}">
+      <a href="{{ homePaths[language] }}">{{ copy.homeLink }}</a>
+      <a href="{{ privacyPaths[language] }}">{{ copy.privacyLink }}</a>
+    </nav>
+    <p>© 2026 {{ site.name }}</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,102 @@
+:root {
+  color-scheme: light;
+  --text: #19212b;
+  --muted: #566273;
+  --border: #dbe1e8;
+  --surface: #f5f7fa;
+  --link: #075fbd;
+  --focus: #ffbf47;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.65;
+  color: var(--text);
+  background: #fff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  min-width: 320px;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+img { display: block; max-width: 100%; height: auto; }
+
+.container {
+  width: min(100% - 2rem, 800px);
+  margin-inline: auto;
+  padding-block: 1.5rem;
+}
+
+.site-header { padding-bottom: 0.5rem; }
+.header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.brand h1 { margin: 0; font-size: clamp(1.7rem, 5vw, 2.25rem); line-height: 1.2; }
+.brand h1 a, .brand-link { color: var(--text); text-decoration: none; }
+.brand-link { font-weight: 700; }
+.subtitle { margin: 0.55rem 0 0; color: var(--muted); }
+
+.lang-switcher { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+.lang-switcher a {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+.lang-switcher a[aria-current="page"] { border-color: var(--text); background: var(--text); color: #fff; }
+
+a { color: var(--link); text-underline-offset: 0.16em; }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible, .button:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.skip-link { position: absolute; z-index: 5; top: 0.5rem; left: 0.5rem; padding: 0.6rem 0.9rem; transform: translateY(-160%); background: #fff; color: var(--text); }
+.skip-link:focus { transform: translateY(0); }
+
+h2 { margin: 2rem 0 0.75rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--border); font-size: 1.35rem; }
+h3 { margin: 0; line-height: 1.4; }
+p { margin: 0.75rem 0; }
+ul { padding-left: 1.4rem; }
+
+.game-list { display: grid; gap: 1rem; }
+.game-item {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+  background: var(--surface);
+}
+.game-icon img { width: 6rem; aspect-ratio: 1; object-fit: contain; }
+.game-info h3 a { color: var(--text); }
+.game-desc { margin: 0.3rem 0 0; color: var(--muted); }
+.game-platforms { display: grid; justify-items: center; gap: 0.4rem; max-width: 11rem; color: var(--muted); text-align: center; font-size: 0.85rem; }
+.game-platforms img { width: 2rem; height: 2rem; }
+
+.game-page h1 { margin: 1.4rem 0 0.25rem; font-size: clamp(1.8rem, 5vw, 2.4rem); line-height: 1.2; }
+.game-hero { width: 100%; aspect-ratio: 16 / 9; border-radius: 0.75rem; object-fit: cover; }
+.game-intro { color: var(--muted); font-size: 1.1rem; }
+.button { display: inline-flex; min-height: 3rem; align-items: center; justify-content: center; padding: 0.65rem 1.1rem; border-radius: 0.45rem; background: #146c43; color: #fff; font-weight: 700; text-decoration: none; }
+.button:hover { background: #0e5634; text-decoration: underline; }
+
+.footer { margin-top: 2.5rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.92rem; }
+.footer-links { display: flex; gap: 0.5rem 1.25rem; flex-wrap: wrap; margin: 0 0 0.4rem; }
+.policy p { margin-block: 0.8rem; }
+
+@media (max-width: 600px) {
+  .container { width: min(100% - 1.5rem, 800px); padding-block: 1.1rem; }
+  .header-row { align-items: flex-start; }
+  .lang-switcher { gap: 0.3rem; }
+  .lang-switcher a { min-height: 2.75rem; padding-inline: 0.65rem; }
+  .game-item { grid-template-columns: 4.5rem minmax(0, 1fr); gap: 0.75rem; padding: 0.75rem; }
+  .game-icon img { width: 4.5rem; }
+  .game-platforms { grid-column: 2; display: flex; flex-direction: row; justify-items: start; max-width: none; text-align: left; }
+  .game-platforms img { flex: 0 0 2rem; }
+  .game-page h1 { overflow-wrap: anywhere; }
+}
