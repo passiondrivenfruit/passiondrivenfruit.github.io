@@ -4,8 +4,10 @@ import path from "node:path";
 const root = path.resolve("dist");
 const languages = ["en", "ko", "ja", "zh"];
 const expectedPages = [
-  "index.html", "en/index.html", ...languages.slice(1).map((lang) => `${lang}/index.html`),
-  ...languages.flatMap((lang) => [`${lang}/Minesweeper.html`, `${lang}/privacy.html`])
+  "index.html", ...languages.map((lang) => `${lang}/index.html`),
+  ...languages.flatMap((lang) => [`${lang}/Minesweeper.html`, `${lang}/privacy.html`]),
+  "ko/legal/terms.html", "ko/legal/privacy.html", "ko/legal/pinballatro-consent.html",
+  "ko/legal/draft-1/terms.html", "ko/legal/draft-1/privacy.html", "ko/legal/draft-1/pinballatro-consent.html"
 ];
 const problems = [];
 const check = (condition, message) => { if (!condition) problems.push(message); };
@@ -20,8 +22,9 @@ function getMeta(html, name) {
 }
 
 function expectedAlternates(page) {
+  if (page.includes("/legal/")) return { ko: page.includes("/draft-1/") ? `/${page}` : `/ko/legal/draft-1/${path.basename(page)}` };
   const kind = page.endsWith("Minesweeper.html") ? "game" : page.endsWith("privacy.html") ? "privacy" : "home";
-  if (kind === "home") return { en: "/", ko: "/ko/index.html", ja: "/ja/index.html", zh: "/zh/index.html" };
+  if (kind === "home") return { ko: "/", en: "/en/index.html", ja: "/ja/index.html", zh: "/zh/index.html" };
   return Object.fromEntries(languages.map((lang) => [lang, `/${lang}/${kind === "game" ? "Minesweeper.html" : "privacy.html"}`]));
 }
 
@@ -30,21 +33,42 @@ for (const page of expectedPages) {
   check(await exists(file), `Missing generated page: ${page}`);
   if (!(await exists(file))) continue;
   const html = await readFile(file, "utf8");
+  if (page === "index.html" || page.endsWith("/index.html")) {
+    const aboutSection = html.match(/<section aria-labelledby="about-heading">([\s\S]*?)<\/section>/)?.[1] ?? "";
+    const aboutParagraphs = [...aboutSection.matchAll(/<p>([\s\S]*?)<\/p>/g)].map((match) => match[1].trim());
+    check(aboutParagraphs.length === 4, `${page}: home introduction must have four paragraphs`);
+    if (page === "index.html") {
+      const expectedKoreanAbout = [
+        "PassionDrivenFruit (PDF) Studio는 캐쥬얼한 모바일 게임을 개발하는 것을 목표로 하고 있습니다.",
+        "2026년 2월 1인 개발로 시작해 바이브 코딩을 기반으로 안드로이드 게임을 개발하고 있습니다.",
+        "간단한 파일럿 프로그램인 지뢰찾기를 시작으로, 현재는 여러 명의 동료들과 함께 개발을 진행하고 있습니다.",
+        "내년 중으로 새로운 게임을 론칭할 예정에 있으니 많은 관심 부탁드립니다."
+      ];
+      check(JSON.stringify(aboutParagraphs) === JSON.stringify(expectedKoreanAbout), "index.html: Korean introduction text has changed");
+    }
+  }
   const alternatePaths = expectedAlternates(page);
-  const lang = page.startsWith("ko/") ? "ko" : page.startsWith("ja/") ? "ja" : page.startsWith("zh/") ? "zh-CN" : "en";
+  const lang = page.startsWith("ko/") ? "ko" : page.startsWith("ja/") ? "ja" : page.startsWith("zh/") ? "zh-CN" : page.startsWith("en/") ? "en" : "ko";
   check(new RegExp(`<html\\s+lang=["']${lang}["']`, "i").test(html), `${page}: wrong or missing html lang`);
   check(/<title>[^<]+<\/title>/i.test(html), `${page}: missing title`);
   check(Boolean(getMeta(html, "description")), `${page}: missing meta description`);
-  const expectedCanonicalPath = page === "index.html" || page === "en/index.html" ? "/" : `/${page}`;
+  const expectedCanonicalPath = page === "index.html" || page === "ko/index.html" ? "/" : page.startsWith("ko/legal/") && !page.includes("/draft-1/") ? `/ko/legal/draft-1/${path.basename(page)}` : `/${page}`;
   check(html.includes(`<link rel="canonical" href="https://pdf-studio.co.kr${expectedCanonicalPath}">`), `${page}: canonical URL is incorrect`);
   check(Boolean(getMeta(html, "og:title")) && Boolean(getMeta(html, "og:description")), `${page}: missing Open Graph title/description`);
   for (const [alternate, hrefPath] of Object.entries(alternatePaths)) {
     const htmlLang = alternate === "zh" ? "zh-CN" : alternate;
     check(html.includes(`<link rel="alternate" hreflang="${htmlLang}" href="https://pdf-studio.co.kr${hrefPath}">`), `${page}: incorrect ${htmlLang} alternate link`);
   }
-  check(html.includes(`<link rel="alternate" hreflang="x-default" href="https://pdf-studio.co.kr${alternatePaths.en}">`), `${page}: incorrect x-default alternate link`);
+  check(html.includes(`<link rel="alternate" hreflang="x-default" href="https://pdf-studio.co.kr${alternatePaths.ko}">`), `${page}: incorrect x-default alternate link`);
   check(/<a\s+[^>]*href=["']#main-content["']/i.test(html), `${page}: missing skip link`);
   check(/id=["']main-content["']/i.test(html), `${page}: missing main-content target`);
+  const xLabel = page.startsWith("ko/") || page === "index.html" ? "X 채널" : page.startsWith("ja/") ? "Xチャンネル" : page.startsWith("zh/") ? "X 频道" : "X channel";
+  check(new RegExp(`<a\\s+href=["']https://x\\.com/PDF_Studio["'][^>]*target=["']_blank["'][^>]*rel=["']noopener noreferrer["'][^>]*>${xLabel}<\\/a>`, "i").test(html), `${page}: missing accessible X channel link`);
+  if (page.includes("/legal/")) {
+    check(/<meta name="robots" content="noindex, nofollow">/i.test(html), `${page}: legal draft must not be indexed`);
+    check(html.includes("검토용 초안"), `${page}: legal draft notice is missing`);
+    check(/<html\s+lang=["']ko["']/i.test(html), `${page}: legal source page must be Korean`);
+  }
   for (const image of html.matchAll(/<img\b[^>]*>/gi)) {
     const tag = image[0];
     const src = tag.match(/\bsrc=["']([^"']+)["']/i)?.[1];
@@ -78,7 +102,7 @@ check(robots.includes("https://pdf-studio.co.kr/sitemap.xml"), "robots.txt does 
 check(!robots.includes("passiondrivenfruit.github.io"), "robots.txt still advertises the GitHub Pages host");
 const sitemap = await readFile(path.join(root, "sitemap.xml"), "utf8").catch(() => "");
 check(!sitemap.includes("passiondrivenfruit.github.io"), "sitemap still advertises the GitHub Pages host");
-const expectedSitemapPaths = ["/", "/ko/index.html", "/ja/index.html", "/zh/index.html", ...languages.flatMap((lang) => [`/${lang}/Minesweeper.html`, `/${lang}/privacy.html`])];
+const expectedSitemapPaths = ["/", "/en/index.html", "/ja/index.html", "/zh/index.html", ...languages.flatMap((lang) => [`/${lang}/Minesweeper.html`, `/${lang}/privacy.html`])];
 for (const url of expectedSitemapPaths) check(sitemap.includes(`https://pdf-studio.co.kr${url}</loc>`), `Sitemap is missing ${url}`);
 check((sitemap.match(/<url>/g) ?? []).length === expectedSitemapPaths.length, "Sitemap URL count does not match canonical pages");
 const css = await readFile(path.join(root, "style.css"), "utf8").catch(() => "");

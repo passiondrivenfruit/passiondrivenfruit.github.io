@@ -14,6 +14,9 @@
 {% elif pageType == 'game' %}
   {% set title = copy.gameTitle %}
   {% set description = copy.gameDescriptionFull %}
+{% elif pageType == 'legal' %}
+  {% set title = legalPageTitle %}
+  {% set description = legalPageDescription %}
 {% else %}
   {% set title = copy.privacyTitle %}
   {% set description = copy.privacyDescription %}
@@ -23,11 +26,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ title }}</title>
   <meta name="description" content="{{ description }}">
+  {% if pageType == 'legal' %}<meta name="robots" content="noindex, nofollow">{% endif %}
   <link rel="canonical" href="{{ site.origin }}{{ canonicalPath }}">
-  {% for item in site.locales %}
+  {% if pageType == 'legal' %}
+  <link rel="alternate" hreflang="ko" href="{{ site.origin }}{{ canonicalPath }}">
+  <link rel="alternate" hreflang="x-default" href="{{ site.origin }}{{ canonicalPath }}">
+  {% else %}
+    {% for item in site.locales %}
   <link rel="alternate" hreflang="{{ item.htmlLang }}" href="{{ site.origin }}{{ localizedPaths[item.code] }}">
-  {% endfor %}
-  <link rel="alternate" hreflang="x-default" href="{{ site.origin }}{{ localizedPaths.en }}">
+    {% endfor %}
+  <link rel="alternate" hreflang="x-default" href="{{ site.origin }}{{ localizedPaths.ko }}">
+  {% endif %}
   <meta property="og:type" content="{{ ogType }}">
   <meta property="og:site_name" content="{{ site.name }}">
   <meta property="og:title" content="{{ title }}">
@@ -55,6 +64,11 @@
       <a class="brand-link" href="{{ homePaths[language] }}">{{ site.name }}</a>
       {% include "language-switcher.njk" %}
     </div>
+    {% elif pageType == 'legal' %}
+    <div class="header-row">
+      <h1>{{ legalPageTitle }}</h1>
+      <span class="language-note">한국어 원문</span>
+    </div>
     {% else %}
     <div class="header-row">
       <h1>{{ copy.privacyTitle }}</h1>
@@ -67,6 +81,9 @@
     <nav class="footer-links" aria-label="{{ copy.footerLabel }}">
       <a href="{{ homePaths[language] }}">{{ copy.homeLink }}</a>
       <a href="{{ privacyPaths[language] }}">{{ copy.privacyLink }}</a>
+      <a href="{{ site.paths.legalTerms }}">{{ copy.termsLink }}</a>
+      <a href="{{ site.paths.legalPrivacy }}">{{ copy.studioPrivacyLink }}</a>
+      <a href="https://x.com/PDF_Studio" target="_blank" rel="noopener noreferrer">{{ copy.xChannel }}</a>
     </nav>
     <p>© 2026 {{ site.name }}</p>
   </footer>
