@@ -1,5 +1,6 @@
 module.exports = function (eleventyConfig) {
   eleventyConfig.setServerOptions({ port: 8080, showAllHosts: true });
+  eleventyConfig.addPassthroughCopy({ "src/favicon.ico": "favicon.ico" });
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "source-assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "src/style.css": "style.css" });
