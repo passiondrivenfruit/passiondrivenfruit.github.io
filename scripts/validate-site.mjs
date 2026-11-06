@@ -8,6 +8,7 @@ const expectedPages = [
   ...languages.flatMap((lang) => [`${lang}/Minesweeper.html`, `${lang}/privacy.html`]),
   "ko/legal/terms.html", "ko/legal/privacy.html", "ko/legal/pinballatro-consent.html", "ko/legal/pinfinity-pinferno-consent.html",
   "ko/legal/draft-1/terms.html", "ko/legal/draft-1/privacy.html", "ko/legal/draft-1/pinballatro-consent.html",
+  "ko/legal/draft-3/terms.html", "ko/legal/draft-3/privacy.html", "ko/legal/draft-3/pinfinity-pinferno-consent.html", "ko/legal/draft-3/support.html",
   "ko/legal/draft-2/terms.html", "ko/legal/draft-2/privacy.html", "ko/legal/draft-2/pinfinity-pinferno-consent.html"
 ];
 const problems = [];
@@ -30,7 +31,7 @@ function expectedAlternates(page) {
 }
 
 function expectedLegalCanonical(page) {
-  if (page.includes("/draft-1/") || page.includes("/draft-2/")) return `/${page}`;
+  if (/\/draft-[123]\//.test(page)) return `/${page}`;
   if (page.endsWith("pinballatro-consent.html") || page.endsWith("pinfinity-pinferno-consent.html")) return "/ko/legal/draft-2/pinfinity-pinferno-consent.html";
   return `/ko/legal/draft-2/${path.basename(page)}`;
 }
@@ -40,6 +41,13 @@ for (const page of expectedPages) {
   check(await exists(file), `Missing generated page: ${page}`);
   if (!(await exists(file))) continue;
   const html = await readFile(file, "utf8");
+  const head = html.match(/<head>([\s\S]*?)<\/head>/i)?.[1] ?? "";
+  for (const tag of [
+    '<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" type="image/x-icon">',
+    '<link rel="icon" href="/assets/ico/favicon-32.png" sizes="32x32" type="image/png">',
+    '<link rel="icon" href="/assets/ico/favicon-192.png" sizes="192x192" type="image/png">',
+    '<link rel="apple-touch-icon" href="/assets/ico/apple-touch-icon.png" sizes="180x180">'
+  ]) check(head.includes(tag), `${page}: missing head icon tag ${tag}`);
   if (page === "index.html" || page.endsWith("/index.html")) {
     const aboutSection = html.match(/<section aria-labelledby="about-heading">([\s\S]*?)<\/section>/)?.[1] ?? "";
     const aboutParagraphs = [...aboutSection.matchAll(/<p>([\s\S]*?)<\/p>/g)].map((match) => match[1].trim());
@@ -103,7 +111,7 @@ for (const page of expectedPages) {
   }
 }
 
-const expectedStatic = ["CNAME", "app-ads.txt", "google77a4653943ed2177.html", "robots.txt", "sitemap.xml", "style.css", "assets/header/minesweeper.jpg", "assets/header/minesweeper.webp", "assets/ico/minesweeper.png", "assets/ico/minesweeper.webp", "assets/ico/android.png", "assets/ico/android.webp"];
+const expectedStatic = ["favicon.ico", "assets/ico/favicon-32.png", "assets/ico/favicon-192.png", "assets/ico/apple-touch-icon.png", "CNAME", "app-ads.txt", "google77a4653943ed2177.html", "robots.txt", "sitemap.xml", "style.css", "assets/header/minesweeper.jpg", "assets/header/minesweeper.webp", "assets/ico/minesweeper.png", "assets/ico/minesweeper.webp", "assets/ico/android.png", "assets/ico/android.webp"];
 for (const file of expectedStatic) check(await exists(path.join(root, file)), `Missing public file: ${file}`);
 const cname = await readFile(path.join(root, "CNAME"), "utf8").catch(() => "");
 check(cname.trim() === "pdf-studio.co.kr", "CNAME does not point to pdf-studio.co.kr");
