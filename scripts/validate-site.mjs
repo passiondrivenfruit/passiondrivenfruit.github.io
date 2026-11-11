@@ -8,7 +8,8 @@ const expectedPages = [
   ...languages.flatMap((lang) => [`${lang}/Minesweeper.html`, `${lang}/privacy.html`]),
   "ko/legal/terms.html", "ko/legal/privacy.html", "ko/legal/pinballatro-consent.html", "ko/legal/pinfinity-pinferno-consent.html",
   "ko/legal/draft-1/terms.html", "ko/legal/draft-1/privacy.html", "ko/legal/draft-1/pinballatro-consent.html",
-  "ko/legal/draft-2/terms.html", "ko/legal/draft-2/privacy.html", "ko/legal/draft-2/pinfinity-pinferno-consent.html"
+  "ko/legal/draft-2/terms.html", "ko/legal/draft-2/privacy.html", "ko/legal/draft-2/pinfinity-pinferno-consent.html",
+  "ko/legal/draft-3/terms.html"
 ];
 const problems = [];
 const check = (condition, message) => { if (!condition) problems.push(message); };
@@ -30,9 +31,9 @@ function expectedAlternates(page) {
 }
 
 function expectedLegalCanonical(page) {
-  if (page.includes("/draft-1/") || page.includes("/draft-2/")) return `/${page}`;
+  if (page.includes("/draft-1/") || page.includes("/draft-2/") || page === "ko/legal/draft-3/terms.html") return `/${page}`;
   if (page.endsWith("pinballatro-consent.html") || page.endsWith("pinfinity-pinferno-consent.html")) return "/ko/legal/draft-2/pinfinity-pinferno-consent.html";
-  return `/ko/legal/draft-2/${path.basename(page)}`;
+  return page.endsWith("terms.html") ? "/ko/legal/draft-3/terms.html" : `/ko/legal/draft-2/${path.basename(page)}`;
 }
 
 for (const page of expectedPages) {
@@ -77,6 +78,12 @@ for (const page of expectedPages) {
     check(/<html\s+lang=["']ko["']/i.test(html), `${page}: legal source page must be Korean`);
     if (page.includes("/draft-1/")) check(html.includes("PinBallatro"), `${page}: historical draft-1 snapshot changed its original project name`);
     if (page.includes("/draft-2/") && page.includes("consent")) check(html.includes("Pinfinity Pinferno"), `${page}: current consent snapshot must use the public game name`);
+    if (page.endsWith("/terms.html") && !page.includes("/draft-1/") && !page.includes("/draft-2/")) {
+      check(html.includes("자동화 플레이어 운영"), `${page}: current terms must include the automation-player section`);
+      check(html.includes("친구 목록, 주간 도전, 랭킹 등 게임 내 콘텐츠에는 실제 이용자와 함께 봇이 포함될 수 있습니다."), `${page}: automation-player disclosure is missing`);
+      check(html.includes("봇의 활동이 이용자의 순위 또는 보상에 영향을 미치는 경우"), `${page}: automation-player impact notice is missing`);
+      check(html.includes("2026년 11월 11일") && html.includes("시행일:</strong> 미정"), `${page}: draft-3 dates are incorrect`);
+    }
     if (!page.includes("/draft-1/") && page.includes("consent")) check(html.includes("Pinfinity Pinferno"), `${page}: current consent route must use the public game name`);
   }
   for (const image of html.matchAll(/<img\b[^>]*>/gi)) {
