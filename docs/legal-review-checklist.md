@@ -16,7 +16,7 @@ The Korean pages under `/ko/legal/` are review drafts. They must not be connecte
 - Review Minesweeper's existing privacy statement against its current released build and Play Console declarations.
 - Decide which games are covered. Add future games only after documenting their data flows and service-specific terms.
 - Obtain legal review for the applicable regions and confirm final Korean text, effective date, and change history.
-- Only after the above, set `legal_consent.terms_url` and `legal_consent.privacy_url` to the final stable URLs and set production version strings. Site draft versions `draft-1` and `draft-2` are not the server's current version `1`.
+- Only after the above, set `legal_consent.terms_url` and `legal_consent.privacy_url` to the final stable URLs and set production version strings. Site draft versions `draft-1`, `draft-2`, and `draft-3` are not the server's current version `1`.
 - Preserve each published snapshot under a new path such as `/ko/legal/draft-3/`; never edit an older snapshot's content partial. Point stable entry routes at the selected current snapshot.
 
 ## Confirmed implementation evidence used for the draft
@@ -36,4 +36,4 @@ The user-facing game name is **Pinfinity Pinferno**. The existing implementation
 - Pinfinity Pinferno required collection/use consent summary draft: `/ko/legal/pinfinity-pinferno-consent.html`
 - Backward-compatible path `/ko/legal/pinballatro-consent.html` serves the same current Pinfinity Pinferno draft-2 content and canonicalizes to its new public route.
 
-The Korean pages are the source text. Other language footers identify them as Korean-only links; no legal translations are implied. `draft-1` URLs and content partials remain unchanged as historical snapshots. Stable entry templates point to the immutable `draft-2` snapshots in `src/_includes/legal/draft-2/`; when updating a draft, create another versioned snapshot and do not edit older content in place.
+The Korean pages are the source text. Other language footers identify them as Korean-only links; no legal translations are implied. `draft-1` URLs and content partials remain unchanged as historical snapshots. The terms entry template points to the immutable `draft-3` terms snapshot in `src/_includes/legal/draft-3/`. Privacy and consent entry templates remain on their immutable `draft-2` snapshots in `src/_includes/legal/draft-2/`. The older `draft-1` and `draft-2` terms snapshots are unchanged; when updating a draft, create another versioned snapshot and do not edit older content in place.
