@@ -81,7 +81,7 @@ for (const page of expectedPages) {
     if (page.endsWith("/terms.html") && !page.includes("/draft-1/") && !page.includes("/draft-2/")) {
       check(html.includes("자동화 플레이어 운영"), `${page}: current terms must include the automation-player section`);
       check(html.includes("친구 목록, 주간 도전, 랭킹 등 게임 내 콘텐츠에는 실제 이용자와 함께 봇이 포함될 수 있습니다."), `${page}: automation-player disclosure is missing`);
-      check(html.includes("봇의 활동이 이용자의 순위 또는 보상에 영향을 미치는 경우"), `${page}: automation-player impact notice is missing`);
+      check(html.includes("봇에게는 랭킹 보상이 지급되지 않으며") && html.includes("봇을 제외한 실제 이용자 간의 순위"), `${page}: automation-player reward notice is missing`);
       check(html.includes("2026년 11월 11일") && html.includes("시행일:</strong> 미정"), `${page}: draft-3 dates are incorrect`);
     }
     if (!page.includes("/draft-1/") && page.includes("consent")) check(html.includes("Pinfinity Pinferno"), `${page}: current consent route must use the public game name`);
