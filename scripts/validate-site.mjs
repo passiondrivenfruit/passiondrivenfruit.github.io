@@ -39,7 +39,16 @@ async function checkLinks(rel, html) {
   }
 }
 
+const iconTags = [
+  '<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" type="image/x-icon">',
+  '<link rel="icon" href="/assets/ico/favicon-32.png" sizes="32x32" type="image/png">',
+  '<link rel="icon" href="/assets/ico/favicon-192.png" sizes="192x192" type="image/png">',
+  '<link rel="apple-touch-icon" href="/assets/ico/apple-touch-icon.png" sizes="180x180">'
+];
+const checkIcons = (rel, html) => { const head = html.match(/<head>([\s\S]*?)<\/head>/i)?.[1] ?? ""; for (const tag of iconTags) check(head.includes(tag), `${rel}: missing head icon tag ${tag}`); };
+
 function checkCommon(rel, html, { lang, dir = "ltr", canonical }) {
+  checkIcons(rel, html);
   check(html.includes(`<html lang="${lang}" dir="${dir}">`), `${rel}: wrong html lang/dir`);
   check(/<title>[^<]+<\/title>/i.test(html) && Boolean(getMeta(html, "description")), `${rel}: missing title or description`);
   check(html.includes(`<link rel="canonical" href="${origin}${canonical}">`), `${rel}: canonical URL is incorrect`);
@@ -146,6 +155,7 @@ for (const game of games) {
     check(html.includes(`<link rel="canonical" href="${origin}/${rel}">`), `${rel}: canonical URL is incorrect`);
     check(html.includes('<meta name="robots" content="noindex, nofollow">') === draft && html.includes('class="draft-notice"') === draft, `${rel}: draft notice and noindex must follow the game's draft flag`);
     check(/<details class="lang-menu">/.test(html), `${rel}: missing language menu`);
+    checkIcons(rel, html);
     for (const alt of game.languages) check(html.includes(`hreflang="${alt}" href="${origin}/${alt}/legal/${game.id}/${doc}.html"`), `${rel}: missing ${alt} alternate`);
     const lastLine = (entry?.text ?? "").trim().split("\n").pop().trim();
     check(lastLine.length > 0 && html.includes(escape(lastLine)), `${rel}: page and JSON text differ`);
@@ -154,7 +164,7 @@ for (const game of games) {
   }
 }
 
-const expectedStatic = ["site.js", "style.css", "assets/ico/minesweeku.webp", "assets/ico/minesweeper.webp", "assets/ico/android.webp", "CNAME", "app-ads.txt", "google77a4653943ed2177.html", "robots.txt", "sitemap.xml", "assets/header/minesweeper.jpg", "assets/ico/minesweeper.png", "assets/ico/minesweeku.png", "assets/ico/android.png"];
+const expectedStatic = ["favicon.ico", "assets/ico/favicon-32.png", "assets/ico/favicon-192.png", "assets/ico/apple-touch-icon.png", "site.js", "style.css", "assets/ico/minesweeku.webp", "assets/ico/minesweeper.webp", "assets/ico/android.webp", "CNAME", "app-ads.txt", "google77a4653943ed2177.html", "robots.txt", "sitemap.xml", "assets/header/minesweeper.jpg", "assets/ico/minesweeper.png", "assets/ico/minesweeku.png", "assets/ico/android.png"];
 for (const file of expectedStatic) check(await exists(path.join(root, file)), `Missing public file: ${file}`);
 check((await read("CNAME")).trim() === "pdf-studio.co.kr", "CNAME does not point to pdf-studio.co.kr");
 const robots = await read("robots.txt");

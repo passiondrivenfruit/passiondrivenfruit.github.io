@@ -15,6 +15,7 @@ eleventyExcludeFromCollections: true
   <meta http-equiv="refresh" content="0; url={{ site.homePaths[lang] }}">
   <link rel="canonical" href="{{ site.origin }}{{ site.homePaths[lang] }}">
   <title>{{ site.name }}</title>
+{% include "head-icons.njk" %}
 </head>
 <body><p><a href="{{ site.homePaths[lang] }}">{{ site.name }}</a></p></body>
 </html>
