@@ -16,7 +16,7 @@ const locales = [
 const homePath = (code) => (code === "ko" ? "/" : `/${code}/index.html`);
 
 module.exports = {
-  name: "PassionDrivenFruit",
+  name: "PassionDrivenFruit Studio",
   origin: "https://pdf-studio.co.kr",
   email: "passiondrivenfruit@gmail.com",
   locales,
@@ -34,7 +34,7 @@ module.exports = {
     ko: {
       subtitle: "단순한 규칙, 신중한 사고, 끝없는 도전을 담은 게임을 만듭니다.",
       skipLink: "본문으로 건너뛰기", languageLabel: "언어 선택", footerLabel: "바닥글",
-      homeTitle: "PassionDrivenFruit — 생각을 즐기는 모바일 게임",
+      homeTitle: "PassionDrivenFruit Studio — 생각을 즐기는 모바일 게임",
       homeDescription: "PassionDrivenFruit Studio가 만든 모바일 퍼즐 게임을 만나보세요.",
       aboutHeading: "소개",
       about: [
@@ -52,7 +52,7 @@ module.exports = {
     en: {
       subtitle: "We make games with simple rules, careful thinking, and endless challenge.",
       skipLink: "Skip to main content", languageLabel: "Language", footerLabel: "Footer",
-      homeTitle: "PassionDrivenFruit — thoughtful games for mobile",
+      homeTitle: "PassionDrivenFruit Studio — thoughtful games for mobile",
       homeDescription: "Discover the mobile puzzle games made by PassionDrivenFruit Studio.",
       aboutHeading: "About",
       about: [
@@ -70,7 +70,7 @@ module.exports = {
     ja: {
       subtitle: "シンプルなルール、慎重な思考、終わりのない挑戦を楽しめるゲームを作っています。",
       skipLink: "メインコンテンツへ移動", languageLabel: "言語", footerLabel: "フッター",
-      homeTitle: "PassionDrivenFruit — 考える楽しさを届けるモバイルゲーム",
+      homeTitle: "PassionDrivenFruit Studio — 考える楽しさを届けるモバイルゲーム",
       homeDescription: "PassionDrivenFruit Studio のモバイルパズルゲームをご紹介します。",
       aboutHeading: "概要",
       about: [
@@ -88,7 +88,7 @@ module.exports = {
     zh: {
       subtitle: "我们制作规则简单、需要谨慎思考并充满挑战的游戏。",
       skipLink: "跳转到主要内容", languageLabel: "语言", footerLabel: "页脚",
-      homeTitle: "PassionDrivenFruit — 享受思考乐趣的手机游戏",
+      homeTitle: "PassionDrivenFruit Studio — 享受思考乐趣的手机游戏",
       homeDescription: "了解 PassionDrivenFruit Studio 制作的手机益智游戏。",
       aboutHeading: "关于",
       about: [
@@ -106,7 +106,7 @@ module.exports = {
     vi: {
       subtitle: "Chúng tôi làm những trò chơi có luật đơn giản, cần suy nghĩ kỹ và thử thách không ngừng.",
       skipLink: "Chuyển đến nội dung chính", languageLabel: "Ngôn ngữ", footerLabel: "Chân trang",
-      homeTitle: "PassionDrivenFruit — trò chơi di động cho người thích suy nghĩ",
+      homeTitle: "PassionDrivenFruit Studio — trò chơi di động cho người thích suy nghĩ",
       homeDescription: "Khám phá các trò chơi giải đố di động của PassionDrivenFruit Studio.",
       aboutHeading: "Giới thiệu",
       about: [
@@ -124,7 +124,7 @@ module.exports = {
     fr: {
       subtitle: "Nous créons des jeux aux règles simples, qui demandent réflexion et offrent un défi sans fin.",
       skipLink: "Aller au contenu principal", languageLabel: "Langue", footerLabel: "Pied de page",
-      homeTitle: "PassionDrivenFruit — des jeux mobiles qui font réfléchir",
+      homeTitle: "PassionDrivenFruit Studio — des jeux mobiles qui font réfléchir",
       homeDescription: "Découvrez les jeux de réflexion mobiles de PassionDrivenFruit Studio.",
       aboutHeading: "À propos",
       about: [
@@ -142,7 +142,7 @@ module.exports = {
     es: {
       subtitle: "Creamos juegos de reglas sencillas, que piden pensar con calma y ofrecen retos sin fin.",
       skipLink: "Ir al contenido principal", languageLabel: "Idioma", footerLabel: "Pie de página",
-      homeTitle: "PassionDrivenFruit — juegos móviles para pensar",
+      homeTitle: "PassionDrivenFruit Studio — juegos móviles para pensar",
       homeDescription: "Descubre los juegos de lógica para móviles de PassionDrivenFruit Studio.",
       aboutHeading: "Quiénes somos",
       about: [
@@ -160,7 +160,7 @@ module.exports = {
     de: {
       subtitle: "Wir machen Spiele mit einfachen Regeln, durchdachten Zügen und endlosen Herausforderungen.",
       skipLink: "Zum Hauptinhalt springen", languageLabel: "Sprache", footerLabel: "Fußzeile",
-      homeTitle: "PassionDrivenFruit — Handyspiele zum Nachdenken",
+      homeTitle: "PassionDrivenFruit Studio — Handyspiele zum Nachdenken",
       homeDescription: "Entdecke die Denkspiele für das Handy von PassionDrivenFruit Studio.",
       aboutHeading: "Über uns",
       about: [
@@ -178,7 +178,7 @@ module.exports = {
     it: {
       subtitle: "Creiamo giochi dalle regole semplici, che fanno ragionare e offrono sfide senza fine.",
       skipLink: "Vai al contenuto principale", languageLabel: "Lingua", footerLabel: "Piè di pagina",
-      homeTitle: "PassionDrivenFruit — giochi per dispositivi mobili che fanno pensare",
+      homeTitle: "PassionDrivenFruit Studio — giochi per dispositivi mobili che fanno pensare",
       homeDescription: "Scopri i giochi di logica per dispositivi mobili di PassionDrivenFruit Studio.",
       aboutHeading: "Chi siamo",
       about: [
@@ -196,7 +196,7 @@ module.exports = {
     pt: {
       subtitle: "Criamos jogos de regras simples, que pedem raciocínio e oferecem desafios sem fim.",
       skipLink: "Ir para o conteúdo principal", languageLabel: "Idioma", footerLabel: "Rodapé",
-      homeTitle: "PassionDrivenFruit — jogos para celular que fazem pensar",
+      homeTitle: "PassionDrivenFruit Studio — jogos para celular que fazem pensar",
       homeDescription: "Conheça os jogos de lógica para celular da PassionDrivenFruit Studio.",
       aboutHeading: "Sobre",
       about: [
@@ -214,7 +214,7 @@ module.exports = {
     ar: {
       subtitle: "نصنع ألعابًا بقواعد بسيطة وتفكير متأنٍّ وتحدٍّ لا ينتهي.",
       skipLink: "انتقل إلى المحتوى الرئيسي", languageLabel: "اللغة", footerLabel: "التذييل",
-      homeTitle: "PassionDrivenFruit — ألعاب للهاتف لمحبي التفكير",
+      homeTitle: "PassionDrivenFruit Studio — ألعاب للهاتف لمحبي التفكير",
       homeDescription: "اكتشف ألعاب الألغاز للهاتف من PassionDrivenFruit Studio.",
       aboutHeading: "من نحن",
       about: [
