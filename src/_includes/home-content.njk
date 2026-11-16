@@ -1,0 +1,77 @@
+{% set copy = site.copy[language] %}
+<main id="main-content" class="container">
+  <section aria-labelledby="about-heading">
+    <h2 id="about-heading">{{ copy.aboutHeading }}</h2>
+    {% for paragraph in copy.about %}
+    <p>{{ paragraph }}</p>
+    {% endfor %}
+  </section>
+
+  <section aria-labelledby="games-heading" class="games">
+    <h2 id="games-heading">{{ copy.gamesHeading }}</h2>
+    <p class="games-hint">{{ copy.gamesHint }}</p>
+    <div class="card-carousel">
+      <button class="rail-arrow prev" type="button" aria-label="{{ copy.prev }}" hidden>‹</button>
+      <ul class="card-rail" aria-labelledby="games-heading">
+        {% for card in legalDocs.cards(language) %}
+        <li class="card-slot">
+          <article class="game-card{% if card.status == 'coming' %} is-coming{% endif %}" style="--frame: {{ card.frame }}"
+            data-game="{{ card.id }}" data-title="{{ copy.screenshots | replace('%s', card.name) }}"
+            data-shots="{{ card.screenshots | join(',') }}" tabindex="0" role="button" aria-haspopup="dialog"
+            aria-label="{{ copy.screenshots | replace('%s', card.name) }}">
+            <header class="card-name">
+              <h3>{{ card.name }}</h3>
+              <span class="card-attrs">
+                {% for store in card.stores %}
+                {% set storeName = site.storeNames[store.id] %}
+                {% if card.status == 'available' %}
+                <a class="card-attr" href="{{ store.url }}" target="_blank" rel="noopener noreferrer" title="{{ copy.getOn | replace('%s', storeName) }}" aria-label="{{ copy.getOn | replace('%s', storeName) }}">
+                  <img src="/assets/ico/android.webp" alt="" width="32" height="32">
+                </a>
+                {% else %}
+                <span class="card-attr is-soon" title="{{ storeName }} · {{ copy.comingSoon }}">
+                  <img src="/assets/ico/android.webp" alt="" width="32" height="32">
+                </span>
+                {% endif %}
+                {% endfor %}
+              </span>
+            </header>
+            <div class="card-status">{% if card.status == 'coming' %}<span class="soon">{{ copy.comingSoon }}</span>{% else %}{% for store in card.stores %}<span>{{ site.storeNames[store.id] }}</span>{% endfor %}{% endif %}</div>
+            <div class="card-art">
+              <img src="{{ card.icon }}" alt="" width="192" height="192" loading="lazy" decoding="async"{% if card.pixelated %} class="pixelated"{% endif %}>
+            </div>
+            <div class="card-text">
+              <p class="card-type">[{{ card.genre }}]</p>
+              <p class="card-desc">{{ card.text }}</p>
+              <p class="card-stats">
+                <a href="{{ card.privacy }}">{{ copy.privacy }}</a>
+                <span aria-hidden="true">/</span>
+                <a href="{{ card.terms }}">{{ copy.terms }}</a>
+              </p>
+            </div>
+          </article>
+        </li>
+        {% endfor %}
+      </ul>
+      <button class="rail-arrow next" type="button" aria-label="{{ copy.next }}" hidden>›</button>
+    </div>
+  </section>
+
+  <section aria-labelledby="contact-heading">
+    <h2 id="contact-heading">{{ copy.contactHeading }}</h2>
+    <p>{{ copy.contact }}<br><a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+  </section>
+</main>
+
+<dialog class="gallery" aria-labelledby="gallery-title">
+  <div class="gallery-head">
+    <h2 id="gallery-title"></h2>
+    <span class="gallery-count" aria-live="polite"></span>
+    <button class="gallery-close" type="button" aria-label="{{ copy.close }}">×</button>
+  </div>
+  <div class="gallery-body">
+    <button class="gallery-nav prev" type="button" aria-label="{{ copy.prev }}">‹</button>
+    <div class="gallery-track" tabindex="0"></div>
+    <button class="gallery-nav next" type="button" aria-label="{{ copy.next }}">›</button>
+  </div>
+</dialog>

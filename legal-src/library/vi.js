@@ -3,6 +3,9 @@ const S = (h, ...p) => ({ h, p: p.flat().filter(Boolean) });
 const GOOGLE = "Chính sách quyền riêng tư của Google: https://policies.google.com/privacy · Cách Google sử dụng thông tin từ các trang web đối tác: https://policies.google.com/technologies/partner-sites";
 
 module.exports = {
+  // Written for games like Minesweeku only: other combinations of the flags below need the
+  // alternative sentences added first (see ko/en/ja/zh), and the build refuses them until then.
+  only: { banner: false, ump: true, adsChoice: true, inGameConsent: true, legalDownload: true },
   ui: {
     languageName: "Tiếng Việt",
     termsTitle: (n) => `Điều khoản dịch vụ ${n}`,

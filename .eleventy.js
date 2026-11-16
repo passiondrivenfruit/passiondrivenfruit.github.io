@@ -3,6 +3,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "source-assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "src/style.css": "style.css" });
+  eleventyConfig.addPassthroughCopy({ "src/site.js": "site.js" });
   eleventyConfig.addPassthroughCopy({ "src/CNAME": "CNAME" });
   eleventyConfig.addPassthroughCopy({ "src/app-ads.txt": "app-ads.txt" });
   eleventyConfig.addPassthroughCopy({ "src/google77a4653943ed2177.html": "google77a4653943ed2177.html" });

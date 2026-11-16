@@ -1,0 +1,13 @@
+---
+pagination:
+  data: site.locales
+  size: 1
+  alias: locale
+permalink: "{{ site.homePaths[locale.code] | replace('/', '', 1) or 'index.html' }}"
+layout: layouts/base.njk
+pageType: home
+eleventyComputed:
+  language: "{{ locale.code }}"
+  canonicalPath: "{{ site.homePaths[locale.code] }}"
+---
+{% include "home-content.njk" %}

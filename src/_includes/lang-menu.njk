@@ -1,0 +1,12 @@
+{# Language menu, top right on every page (top left in right-to-left pages). Expects: menuItems [{code, htmlLang, label, href}], menuCurrent, menuLabel #}
+<details class="lang-menu">
+  <summary aria-label="{{ menuLabel }}">
+    <svg class="lang-globe" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 12h18M12 2.8c2.6 2.6 3.9 5.6 3.9 9.2s-1.3 6.6-3.9 9.2M12 2.8C9.4 5.4 8.1 8.4 8.1 12s1.3 6.6 3.9 9.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+    {% for item in menuItems %}{% if item.code == menuCurrent %}<span>{{ item.label }}</span>{% endif %}{% endfor %}
+  </summary>
+  <ul>
+    {% for item in menuItems %}
+    <li><a href="{{ item.href }}" lang="{{ item.htmlLang }}" hreflang="{{ item.htmlLang }}"{% if item.code == menuCurrent %} aria-current="page"{% endif %}>{{ item.label }}</a></li>
+    {% endfor %}
+  </ul>
+</details>

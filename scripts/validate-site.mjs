@@ -1,172 +1,175 @@
 import { readFile, stat } from "node:fs/promises";
+import { readdirSync } from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 
+const requireCjs = createRequire(import.meta.url);
 const root = path.resolve("dist");
-const languages = ["en", "ko", "ja", "zh"];
-const expectedPages = [
-  "index.html", ...languages.map((lang) => `${lang}/index.html`),
-  ...languages.flatMap((lang) => [`${lang}/Minesweeper.html`, `${lang}/privacy.html`]),
+const origin = "https://pdf-studio.co.kr";
+const site = requireCjs(path.resolve("src/_data/site.js"));
+const legalDocs = requireCjs(path.resolve("src/_data/legalDocs.js"));
+const legalRoot = path.resolve("legal-src");
+const library = Object.fromEntries(readdirSync(path.join(legalRoot, "library")).map((f) => [path.basename(f, ".js"), requireCjs(path.join(legalRoot, "library", f))]));
+const games = readdirSync(path.join(legalRoot, "games")).map((f) => requireCjs(path.join(legalRoot, "games", f)));
+
+const problems = [];
+const check = (condition, message) => { if (!condition) problems.push(message); };
+const exists = async (file) => { try { return (await stat(file)).isFile(); } catch { return false; } };
+const read = (rel) => readFile(path.join(root, rel), "utf8").catch(() => "");
+const getMeta = (html, name) => html.match(new RegExp(`<meta\\s+(?:name|property)=["']${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}["']\\s+content=["']([^"']+)["']`, "i"))?.[1] ?? "";
+const escape = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+const relOf = (href) => (href === "/" ? "index.html" : href.slice(1));
+let pages = 0;
+
+// Images with intrinsic size and local links that resolve, for every page we check.
+async function checkLinks(rel, html) {
+  pages += 1;
+  for (const image of html.matchAll(/<img\b[^>]*>/gi)) {
+    const src = image[0].match(/\bsrc=["']([^"']+)["']/i)?.[1];
+    check(/\bwidth=["']\d+["']/i.test(image[0]) && /\bheight=["']\d+["']/i.test(image[0]), `${rel}: image is missing intrinsic width/height (${src})`);
+    if (src?.startsWith("/")) check(await exists(path.join(root, src.slice(1))), `${rel}: missing image ${src}`);
+  }
+  for (const [, link] of html.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)) {
+    if (/^(?:https?:|mailto:|tel:|#|data:|javascript:)/i.test(link)) continue;
+    const clean = decodeURIComponent(link.split(/[?#]/, 1)[0]);
+    const target = path.resolve(root, clean.startsWith("/") ? `.${clean}` : path.join(path.dirname(rel), clean));
+    const inside = target === root || target.startsWith(`${root}${path.sep}`);
+    check(inside, `${rel}: local URL escapes dist: ${link}`);
+    if (inside) check(await exists(clean === "/" || clean.endsWith("/") ? path.join(target, "index.html") : target), `${rel}: broken local link ${link}`);
+  }
+}
+
+function checkCommon(rel, html, { lang, dir = "ltr", canonical }) {
+  check(html.includes(`<html lang="${lang}" dir="${dir}">`), `${rel}: wrong html lang/dir`);
+  check(/<title>[^<]+<\/title>/i.test(html) && Boolean(getMeta(html, "description")), `${rel}: missing title or description`);
+  check(html.includes(`<link rel="canonical" href="${origin}${canonical}">`), `${rel}: canonical URL is incorrect`);
+  check(Boolean(getMeta(html, "og:title")) && Boolean(getMeta(html, "og:description")), `${rel}: missing Open Graph title/description`);
+  check(/<a class="skip-link" href="#main-content">/.test(html) && /id="main-content"/.test(html), `${rel}: missing skip link or target`);
+  check(/<details class="lang-menu">[\s\S]*?<summary aria-label="[^"]+">[\s\S]*?<\/summary>\s*<ul>/.test(html), `${rel}: missing language menu`);
+  check(html.includes('href="https://x.com/PDF_Studio" target="_blank" rel="noopener noreferrer"'), `${rel}: missing X channel link`);
+}
+
+// Home pages: every site language, with language menu, introduction and game cards.
+const expectedKoreanAbout = [
+  "PassionDrivenFruit (PDF) Studio는 캐쥬얼한 모바일 게임을 개발하는 것을 목표로 하고 있습니다.",
+  "2026년 2월 1인 개발로 시작해 바이브 코딩을 기반으로 안드로이드 게임을 개발하고 있습니다.",
+  "간단한 파일럿 프로그램인 지뢰찾기를 시작으로, 현재는 여러 명의 동료들과 함께 개발을 진행하고 있습니다.",
+  "내년 중으로 새로운 게임을 론칭할 예정에 있으니 많은 관심 부탁드립니다."
+];
+const cardGames = games.filter((g) => g.card);
+for (const loc of site.locales) {
+  const href = site.homePaths[loc.code];
+  const rel = relOf(href);
+  const html = await read(rel);
+  check(html.length > 0, `Missing home page: ${rel}`);
+  if (!html) continue;
+  checkCommon(rel, html, { lang: loc.htmlLang, dir: loc.dir ?? "ltr", canonical: href });
+  for (const alt of site.locales) check(html.includes(`<link rel="alternate" hreflang="${alt.htmlLang}" href="${origin}${site.homePaths[alt.code]}">`), `${rel}: missing ${alt.code} alternate`);
+  check(html.includes(`<link rel="alternate" hreflang="x-default" href="${origin}/">`), `${rel}: missing x-default alternate`);
+  const menu = html.match(/<details class="lang-menu">([\s\S]*?)<\/details>/)?.[1] ?? "";
+  check((menu.match(/<li><a /g) ?? []).length === site.locales.length && menu.includes(`href="${href}" lang="${loc.htmlLang}" hreflang="${loc.htmlLang}" aria-current="page"`), `${rel}: language menu must list every language and mark this one`);
+  const about = [...(html.match(/<section aria-labelledby="about-heading">([\s\S]*?)<\/section>/)?.[1] ?? "").matchAll(/<p>([\s\S]*?)<\/p>/g)].map((m) => m[1].trim());
+  check(about.length === 4, `${rel}: home introduction must have four paragraphs`);
+  if (loc.code === "ko") check(JSON.stringify(about) === JSON.stringify(expectedKoreanAbout), "index.html: Korean introduction text has changed");
+  const cards = [...html.matchAll(/<article class="game-card[^"]*"[\s\S]*?<\/article>/g)].map((m) => m[0]);
+  check(cards.length === cardGames.length, `${rel}: expected ${cardGames.length} game cards, found ${cards.length}`);
+  for (const [i, card] of cards.entries()) {
+    const game = legalDocs.cards(loc.code)[i];
+    check(card.includes(`<h3>${escape(game.name)}</h3>`) && /class="card-attr/.test(card) && /class="card-art"/.test(card) && card.includes(escape(game.text)), `${rel}: card ${game.id} is missing its name, store, art or text`);
+    check(card.includes(`href="${game.privacy}"`) && card.includes(`href="${game.terms}"`), `${rel}: card ${game.id} must link both documents`);
+    for (const store of game.stores) check(game.status !== "available" || card.includes(`href="${store.url}"`), `${rel}: card ${game.id} must link its store`);
+    const shots = card.match(/data-shots="([^"]*)"/)?.[1].split(",").filter(Boolean) ?? [];
+    check(shots.length > 0, `${rel}: card ${game.id} has no screenshots`);
+    for (const shot of shots) check(await exists(path.join(root, shot.slice(1))), `${rel}: missing screenshot ${shot}`);
+  }
+  check(/<dialog class="gallery"/.test(html) && html.includes('<script src="/site.js" defer></script>'), `${rel}: missing screenshot gallery`);
+  await checkLinks(rel, html);
+}
+
+// Old game detail pages redirect home; the old Minesweeper privacy URLs keep serving the current policy.
+for (const lang of site.legacyGamePages) {
+  const rel = `${lang}/Minesweeper.html`;
+  const html = await read(rel);
+  check(html.includes(`<meta http-equiv="refresh" content="0; url=${site.homePaths[lang]}">`) && html.includes('<meta name="robots" content="noindex">'), `${rel}: must redirect to the ${lang} home page`);
+}
+for (const game of games) for (const [doc, byLang] of Object.entries(game.aliases ?? {})) for (const [lang, alias] of Object.entries(byLang)) {
+  const rel = alias.slice(1);
+  const html = await read(rel);
+  const page = legalDocs.pages.find((p) => p.game === game.id && p.doc === doc && p.lang === lang && !p.alias);
+  check(html.length > 0 && html.includes(`<link rel="canonical" href="${page?.url}">`) && html.includes(escape(page?.sections.at(-1).paragraphs.at(-1) ?? "?")), `${rel}: must serve ${game.id} ${doc} (${lang}) with its canonical URL`);
+}
+
+// Studio legal drafts (Korean source pages for Pinfinity Pinferno's server consent URLs).
+const studioDrafts = [
   "ko/legal/terms.html", "ko/legal/privacy.html", "ko/legal/pinballatro-consent.html", "ko/legal/pinfinity-pinferno-consent.html",
   "ko/legal/draft-1/terms.html", "ko/legal/draft-1/privacy.html", "ko/legal/draft-1/pinballatro-consent.html",
   "ko/legal/draft-2/terms.html", "ko/legal/draft-2/privacy.html", "ko/legal/draft-2/pinfinity-pinferno-consent.html",
   "ko/legal/draft-3/terms.html"
 ];
-const problems = [];
-const check = (condition, message) => { if (!condition) problems.push(message); };
-
-async function exists(file) {
-  try { return (await stat(file)).isFile(); } catch { return false; }
+const draftCanonical = (rel) => {
+  if (/\/draft-[123]\//.test(rel)) return `/${rel}`;
+  if (rel.endsWith("consent.html")) return "/ko/legal/draft-2/pinfinity-pinferno-consent.html";
+  return rel.endsWith("terms.html") ? "/ko/legal/draft-3/terms.html" : `/ko/legal/draft-2/${path.basename(rel)}`;
+};
+for (const rel of studioDrafts) {
+  const html = await read(rel);
+  check(html.length > 0, `Missing generated page: ${rel}`);
+  if (!html) continue;
+  checkCommon(rel, html, { lang: "ko", canonical: draftCanonical(rel) });
+  check(html.includes('<meta name="robots" content="noindex, nofollow">') && html.includes("검토용 초안"), `${rel}: legal draft must be noindex with its notice`);
+  if (rel.includes("/draft-1/")) check(html.includes("PinBallatro"), `${rel}: historical draft-1 snapshot changed its original project name`);
+  if (!rel.includes("/draft-1/") && rel.includes("consent")) check(html.includes("Pinfinity Pinferno"), `${rel}: consent pages must use the public game name`);
+  if (rel.endsWith("/terms.html") && !rel.includes("/draft-1/") && !rel.includes("/draft-2/")) {
+    check(html.includes("자동화 플레이어 운영") && html.includes("봇에게는 랭킹 보상이 지급되지 않으며") && html.includes("봇을 제외한 실제 이용자 간의 순위"), `${rel}: current terms must include the automation-player section`);
+    check(html.includes("2026년 11월 11일") && html.includes("시행일:</strong> 미정"), `${rel}: draft-3 dates are incorrect`);
+  }
+  await checkLinks(rel, html);
 }
 
-function getMeta(html, name) {
-  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return html.match(new RegExp(`<meta\\s+(?:name|property)=["']${escaped}["']\\s+content=["']([^"']+)["']`, "i"))?.[1] ?? "";
-}
-
-function expectedAlternates(page) {
-  if (page.includes("/legal/")) return { ko: expectedLegalCanonical(page) };
-  const kind = page.endsWith("Minesweeper.html") ? "game" : page.endsWith("privacy.html") ? "privacy" : "home";
-  if (kind === "home") return { ko: "/", en: "/en/index.html", ja: "/ja/index.html", zh: "/zh/index.html" };
-  return Object.fromEntries(languages.map((lang) => [lang, `/${lang}/${kind === "game" ? "Minesweeper.html" : "privacy.html"}`]));
-}
-
-function expectedLegalCanonical(page) {
-  if (page.includes("/draft-1/") || page.includes("/draft-2/") || page === "ko/legal/draft-3/terms.html") return `/${page}`;
-  if (page.endsWith("pinballatro-consent.html") || page.endsWith("pinfinity-pinferno-consent.html")) return "/ko/legal/draft-2/pinfinity-pinferno-consent.html";
-  return page.endsWith("terms.html") ? "/ko/legal/draft-3/terms.html" : `/ko/legal/draft-2/${path.basename(page)}`;
-}
-
-for (const page of expectedPages) {
-  const file = path.join(root, page);
-  check(await exists(file), `Missing generated page: ${page}`);
-  if (!(await exists(file))) continue;
-  const html = await readFile(file, "utf8");
-  if (page === "index.html" || page.endsWith("/index.html")) {
-    const aboutSection = html.match(/<section aria-labelledby="about-heading">([\s\S]*?)<\/section>/)?.[1] ?? "";
-    const aboutParagraphs = [...aboutSection.matchAll(/<p>([\s\S]*?)<\/p>/g)].map((match) => match[1].trim());
-    check(aboutParagraphs.length === 4, `${page}: home introduction must have four paragraphs`);
-    if (page === "index.html") {
-      const expectedKoreanAbout = [
-        "PassionDrivenFruit (PDF) Studio는 캐쥬얼한 모바일 게임을 개발하는 것을 목표로 하고 있습니다.",
-        "2026년 2월 1인 개발로 시작해 바이브 코딩을 기반으로 안드로이드 게임을 개발하고 있습니다.",
-        "간단한 파일럿 프로그램인 지뢰찾기를 시작으로, 현재는 여러 명의 동료들과 함께 개발을 진행하고 있습니다.",
-        "내년 중으로 새로운 게임을 론칭할 예정에 있으니 많은 관심 부탁드립니다."
-      ];
-      check(JSON.stringify(aboutParagraphs) === JSON.stringify(expectedKoreanAbout), "index.html: Korean introduction text has changed");
-    }
-  }
-  const alternatePaths = expectedAlternates(page);
-  const lang = page.startsWith("ko/") ? "ko" : page.startsWith("ja/") ? "ja" : page.startsWith("zh/") ? "zh-CN" : page.startsWith("en/") ? "en" : "ko";
-  check(new RegExp(`<html\\s+lang=["']${lang}["']`, "i").test(html), `${page}: wrong or missing html lang`);
-  check(/<title>[^<]+<\/title>/i.test(html), `${page}: missing title`);
-  check(Boolean(getMeta(html, "description")), `${page}: missing meta description`);
-  const expectedCanonicalPath = page === "index.html" || page === "ko/index.html" ? "/" : page.startsWith("ko/legal/") ? expectedLegalCanonical(page) : `/${page}`;
-  check(html.includes(`<link rel="canonical" href="https://pdf-studio.co.kr${expectedCanonicalPath}">`), `${page}: canonical URL is incorrect`);
-  check(Boolean(getMeta(html, "og:title")) && Boolean(getMeta(html, "og:description")), `${page}: missing Open Graph title/description`);
-  for (const [alternate, hrefPath] of Object.entries(alternatePaths)) {
-    const htmlLang = alternate === "zh" ? "zh-CN" : alternate;
-    check(html.includes(`<link rel="alternate" hreflang="${htmlLang}" href="https://pdf-studio.co.kr${hrefPath}">`), `${page}: incorrect ${htmlLang} alternate link`);
-  }
-  check(html.includes(`<link rel="alternate" hreflang="x-default" href="https://pdf-studio.co.kr${alternatePaths.ko}">`), `${page}: incorrect x-default alternate link`);
-  check(/<a\s+[^>]*href=["']#main-content["']/i.test(html), `${page}: missing skip link`);
-  check(/id=["']main-content["']/i.test(html), `${page}: missing main-content target`);
-  const xLabel = page.startsWith("ko/") || page === "index.html" ? "X 채널" : page.startsWith("ja/") ? "Xチャンネル" : page.startsWith("zh/") ? "X 频道" : "X channel";
-  check(new RegExp(`<a\\s+href=["']https://x\\.com/PDF_Studio["'][^>]*target=["']_blank["'][^>]*rel=["']noopener noreferrer["'][^>]*>${xLabel}<\\/a>`, "i").test(html), `${page}: missing accessible X channel link`);
-  if (page.includes("/legal/")) {
-    check(/<meta name="robots" content="noindex, nofollow">/i.test(html), `${page}: legal draft must not be indexed`);
-    check(html.includes("검토용 초안"), `${page}: legal draft notice is missing`);
-    check(/<html\s+lang=["']ko["']/i.test(html), `${page}: legal source page must be Korean`);
-    if (page.includes("/draft-1/")) check(html.includes("PinBallatro"), `${page}: historical draft-1 snapshot changed its original project name`);
-    if (page.includes("/draft-2/") && page.includes("consent")) check(html.includes("Pinfinity Pinferno"), `${page}: current consent snapshot must use the public game name`);
-    if (page.endsWith("/terms.html") && !page.includes("/draft-1/") && !page.includes("/draft-2/")) {
-      check(html.includes("자동화 플레이어 운영"), `${page}: current terms must include the automation-player section`);
-      check(html.includes("친구 목록, 주간 도전, 랭킹 등 게임 내 콘텐츠에는 실제 이용자와 함께 봇이 포함될 수 있습니다."), `${page}: automation-player disclosure is missing`);
-      check(html.includes("봇에게는 랭킹 보상이 지급되지 않으며") && html.includes("봇을 제외한 실제 이용자 간의 순위"), `${page}: automation-player reward notice is missing`);
-      check(html.includes("2026년 11월 11일") && html.includes("시행일:</strong> 미정"), `${page}: draft-3 dates are incorrect`);
-    }
-    if (!page.includes("/draft-1/") && page.includes("consent")) check(html.includes("Pinfinity Pinferno"), `${page}: current consent route must use the public game name`);
-  }
-  for (const image of html.matchAll(/<img\b[^>]*>/gi)) {
-    const tag = image[0];
-    const src = tag.match(/\bsrc=["']([^"']+)["']/i)?.[1];
-    check(/\bwidth=["']\d+["']/i.test(tag) && /\bheight=["']\d+["']/i.test(tag), `${page}: image is missing intrinsic width/height (${src ?? "unknown"})`);
-    if (src?.startsWith("/")) check(await exists(path.join(root, src.slice(1))), `${page}: missing image ${src}`);
-  }
-  const localLinks = [...html.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)].map((match) => match[1]);
-  for (const link of localLinks) {
-    if (/^(?:https?:|mailto:|tel:|#|data:|javascript:)/i.test(link)) continue;
-    const clean = decodeURIComponent(link.split(/[?#]/, 1)[0]);
-    const target = path.resolve(root, clean.startsWith("/") ? `.${clean}` : path.join(path.dirname(page), clean));
-    const inside = target === root || target.startsWith(`${root}${path.sep}`);
-    check(inside, `${page}: local URL escapes dist: ${link}`);
-    if (inside) {
-      const targetFile = clean === "/" || clean.endsWith("/") ? path.join(target, "index.html") : target;
-      check(await exists(targetFile), `${page}: broken local link ${link}`);
-    }
-  }
-  if (page.endsWith("Minesweeper.html")) {
-    check(/<h1\b[^>]*>Minesweeper – Find and Seek<\/h1>/i.test(html), `${page}: missing game h1`);
-    check(/href=["']https:\/\/play\.google\.com\/store\/apps\/details\?id=com\.jnk\.minesweeper["']/i.test(html), `${page}: missing Google Play CTA`);
-  }
-}
-
-const expectedStatic = ["assets/ico/minesweeku.png", "assets/ico/minesweeku.webp", "CNAME", "app-ads.txt", "google77a4653943ed2177.html", "robots.txt", "sitemap.xml", "style.css", "assets/header/minesweeper.jpg", "assets/header/minesweeper.webp", "assets/ico/minesweeper.png", "assets/ico/minesweeper.webp", "assets/ico/android.png", "assets/ico/android.webp"];
-for (const file of expectedStatic) check(await exists(path.join(root, file)), `Missing public file: ${file}`);
-// Game legal documents: every game, every language it supports, both documents, page and JSON in sync.
-const { createRequire } = await import("node:module");
-const requireCjs = createRequire(import.meta.url);
-const legalRoot = path.resolve("legal-src");
-const { readdirSync } = await import("node:fs");
-const library = Object.fromEntries(readdirSync(path.join(legalRoot, "library")).map((f) => [path.basename(f, ".js"), requireCjs(path.join(legalRoot, "library", f))]));
-const libLangs = Object.keys(library);
-for (const lang of libLangs) {
+// Game documents: shared paragraph library × game facts, every supported language, page and JSON in sync.
+for (const lang of Object.keys(library)) {
   for (const doc of ["terms", "privacy"]) check(library[lang][doc].length === library.ko[doc].length, `legal library ${lang}: ${doc} has ${library[lang][doc].length} paragraphs, ko has ${library.ko[doc].length}`);
   for (const key of Object.keys(library.ko.ui)) if (key !== "translationNote" && key !== "dir") check(library[lang].ui[key] !== undefined, `legal library ${lang}: ui.${key} missing`);
 }
-let legalPages = 0;
-for (const file of readdirSync(path.join(legalRoot, "games"))) {
-  const game = requireCjs(path.join(legalRoot, "games", file));
-  const json = JSON.parse(await readFile(path.join(root, `legal/${game.id}.json`), "utf8").catch(() => "{}"));
+for (const game of games) {
+  const json = JSON.parse((await read(`legal/${game.id}.json`)) || "{}");
   check(json.schema === 2 && json.game === game.id && json.version === game.version && json.effective === game.effective, `legal/${game.id}.json: header fields are invalid`);
   check(JSON.stringify(json.languages) === JSON.stringify(game.languages), `legal/${game.id}.json: languages differ from the game`);
-  for (const lang of game.languages) {
-    check(libLangs.includes(lang), `${game.id}: no legal library for ${lang}`);
-    for (const doc of ["terms", "privacy"]) {
-      const entry = json.documents?.[doc]?.[lang];
-      const rel = `${lang}/legal/${game.id}/${doc}.html`;
-      check(Boolean(entry?.title) && (entry?.text ?? "").length > 400 && entry?.url === `https://pdf-studio.co.kr/${rel}`, `legal/${game.id}.json: ${doc}.${lang} is incomplete`);
-      const html = await readFile(path.join(root, rel), "utf8").catch(() => "");
-      legalPages += 1;
-      check(html.length > 0, `Missing generated page: ${rel}`);
-      check(new RegExp(`<html lang="${lang}" dir="${lang === "ar" ? "rtl" : "ltr"}">`).test(html), `${rel}: wrong html lang/dir`);
-      check(/<meta name="robots" content="noindex, nofollow">/.test(html), `${rel}: must not be indexed until legal review`);
-      check(html.includes(`<link rel="canonical" href="https://pdf-studio.co.kr/${rel}">`), `${rel}: canonical URL is incorrect`);
-      for (const alt of game.languages) check(html.includes(`hreflang="${alt}" href="https://pdf-studio.co.kr/${alt}/legal/${game.id}/${doc}.html"`), `${rel}: missing ${alt} alternate`);
-      const escape = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-      const lastLine = (entry?.text ?? "").trim().split("\n").pop().trim();
-      check(lastLine.length > 0 && html.includes(escape(lastLine)), `${rel}: page and JSON text differ`);
-      check(!/undefined|null|\[object/.test(entry?.text ?? ""), `${rel}: unfilled placeholder in text`);
-    }
+  const draft = game.draft !== false;
+  for (const lang of game.languages) for (const doc of ["terms", "privacy"]) {
+    const entry = json.documents?.[doc]?.[lang];
+    const rel = `${lang}/legal/${game.id}/${doc}.html`;
+    check(Boolean(entry?.title) && (entry?.text ?? "").length > 400 && entry?.url === `${origin}/${rel}`, `legal/${game.id}.json: ${doc}.${lang} is incomplete`);
+    const html = await read(rel);
+    check(html.length > 0, `Missing generated page: ${rel}`);
+    check(html.includes(`<html lang="${lang}" dir="${lang === "ar" ? "rtl" : "ltr"}">`), `${rel}: wrong html lang/dir`);
+    check(html.includes(`<link rel="canonical" href="${origin}/${rel}">`), `${rel}: canonical URL is incorrect`);
+    check(html.includes('<meta name="robots" content="noindex, nofollow">') === draft && html.includes('class="draft-notice"') === draft, `${rel}: draft notice and noindex must follow the game's draft flag`);
+    check(/<details class="lang-menu">/.test(html), `${rel}: missing language menu`);
+    for (const alt of game.languages) check(html.includes(`hreflang="${alt}" href="${origin}/${alt}/legal/${game.id}/${doc}.html"`), `${rel}: missing ${alt} alternate`);
+    const lastLine = (entry?.text ?? "").trim().split("\n").pop().trim();
+    check(lastLine.length > 0 && html.includes(escape(lastLine)), `${rel}: page and JSON text differ`);
+    check(!/undefined|\bnull\b|\[object/.test(entry?.text ?? ""), `${rel}: unfilled placeholder in text`);
+    await checkLinks(rel, html);
   }
 }
-check(legalPages > 0, "no game legal pages were checked");
-const cname = await readFile(path.join(root, "CNAME"), "utf8").catch(() => "");
-check(cname.trim() === "pdf-studio.co.kr", "CNAME does not point to pdf-studio.co.kr");
-const robots = await readFile(path.join(root, "robots.txt"), "utf8").catch(() => "");
-check(robots.includes("https://pdf-studio.co.kr/sitemap.xml"), "robots.txt does not reference the canonical sitemap");
-check(!robots.includes("passiondrivenfruit.github.io"), "robots.txt still advertises the GitHub Pages host");
-const sitemap = await readFile(path.join(root, "sitemap.xml"), "utf8").catch(() => "");
-check(!sitemap.includes("passiondrivenfruit.github.io"), "sitemap still advertises the GitHub Pages host");
-const expectedSitemapPaths = ["/", "/en/index.html", "/ja/index.html", "/zh/index.html", ...languages.flatMap((lang) => [`/${lang}/Minesweeper.html`, `/${lang}/privacy.html`])];
-for (const url of expectedSitemapPaths) check(sitemap.includes(`https://pdf-studio.co.kr${url}</loc>`), `Sitemap is missing ${url}`);
-check((sitemap.match(/<url>/g) ?? []).length === expectedSitemapPaths.length, "Sitemap URL count does not match canonical pages");
-const css = await readFile(path.join(root, "style.css"), "utf8").catch(() => "");
-check(css.includes("@media (max-width: 600px)") && css.includes("minmax(0, 1fr)"), "Responsive mobile layout rules are missing");
-check(css.includes("max-width: 100%") && css.includes("overflow-wrap: anywhere"), "Responsive image/text overflow protection is missing");
+
+const expectedStatic = ["site.js", "style.css", "assets/ico/minesweeku.webp", "assets/ico/minesweeper.webp", "assets/ico/android.webp", "CNAME", "app-ads.txt", "google77a4653943ed2177.html", "robots.txt", "sitemap.xml", "assets/header/minesweeper.jpg", "assets/ico/minesweeper.png", "assets/ico/minesweeku.png", "assets/ico/android.png"];
+for (const file of expectedStatic) check(await exists(path.join(root, file)), `Missing public file: ${file}`);
+check((await read("CNAME")).trim() === "pdf-studio.co.kr", "CNAME does not point to pdf-studio.co.kr");
+const robots = await read("robots.txt");
+check(robots.includes(`${origin}/sitemap.xml`) && !robots.includes("passiondrivenfruit.github.io"), "robots.txt must reference only the canonical sitemap");
+const sitemap = await read("sitemap.xml");
+const sitemapUrls = [...site.locales.map((l) => origin + site.homePaths[l.code]), ...legalDocs.pages.filter((p) => !p.draft && !p.alias).map((p) => p.url)];
+for (const url of sitemapUrls) check(sitemap.includes(`<loc>${url}</loc>`), `Sitemap is missing ${url}`);
+check((sitemap.match(/<url>/g) ?? []).length === sitemapUrls.length && !sitemap.includes("passiondrivenfruit.github.io"), "Sitemap must list exactly the canonical public pages");
+const css = await read("style.css");
+check(css.includes("@media (max-width: 600px)") && css.includes("max-width: 100%") && css.includes("overflow-wrap: anywhere"), "Responsive layout rules are missing");
+check(css.includes(".game-card:hover") && css.includes("scroll-snap-type: x mandatory") && css.includes(".gallery::backdrop") && css.includes(".lang-menu ul"), "Card, rail, gallery or language menu styles are missing");
 
 if (problems.length) {
   console.error(`Site validation failed (${problems.length} issue${problems.length === 1 ? "" : "s"}):\n- ${problems.join("\n- ")}`);
   process.exitCode = 1;
 } else {
-  console.log(`Validated ${expectedPages.length} pages, internal links, metadata, sitemap, responsive rules, images, and preserved public files.`);
+  console.log(`Validated ${pages} pages: ${site.locales.length} home pages with ${cardGames.length} game cards, game documents, legal drafts, links, images, sitemap and styles.`);
 }
