@@ -1,0 +1,10 @@
+---
+pagination:
+  data: legalDocs.games
+  size: 1
+  alias: game
+permalink: "legal/{{ game.id }}.json"
+layout: false
+eleventyExcludeFromCollections: true
+---
+{{ game.json | safe }}

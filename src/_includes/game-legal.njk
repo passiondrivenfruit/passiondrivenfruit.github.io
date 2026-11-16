@@ -1,8 +1,0 @@
-{% set doc = minesweekuLegal.documents[docKey][language] %}
-<main id="main-content" class="container policy legal-document">
-  <p class="draft-notice">{% if language == 'ko' %}<strong>검토용 초안</strong> — 게임 안에서 표시·동의받는 문서와 같은 내용입니다. 법률 검토 후 확정합니다.{% else %}<strong>Draft under review</strong> — the same text the game shows and asks players to accept. It will be finalized after legal review. The Korean original prevails.{% endif %}</p>
-  <p class="legal-meta">{% if language == 'ko' %}문서 버전 {{ minesweekuLegal.version }}{% else %}Document version {{ minesweekuLegal.version }}{% endif %}</p>
-  {% for block in doc.blocks %}
-  <p class="legal-block">{{ block }}</p>
-  {% endfor %}
-</main>

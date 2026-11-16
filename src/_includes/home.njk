@@ -39,7 +39,7 @@
         <div class="game-info">
           <h3>{{ copy.upcomingTitle }}</h3>
           <p class="game-desc">{{ copy.upcomingDescription }}</p>
-          <p class="game-legal"><a href="{{ minesweekuLegal.pages.terms[copy.upcomingLegalLang] }}">{{ copy.upcomingTermsLink }}</a> · <a href="{{ minesweekuLegal.pages.privacy[copy.upcomingLegalLang] }}">{{ copy.upcomingPrivacyLink }}</a></p>
+          <p class="game-legal"><a href="{{ legalDocs.link('minesweeku', 'terms', language) }}">{{ copy.upcomingTermsLink }}</a> · <a href="{{ legalDocs.link('minesweeku', 'privacy', language) }}">{{ copy.upcomingPrivacyLink }}</a></p>
         </div>
         <div class="game-platforms">
           <span>{{ copy.upcomingStatus }}</span>

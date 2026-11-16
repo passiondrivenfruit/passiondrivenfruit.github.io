@@ -38,12 +38,14 @@ The user-facing game name is **Pinfinity Pinferno**. The existing implementation
 
 The Korean pages are the source text. Other language footers identify them as Korean-only links; no legal translations are implied. `draft-1` URLs and content partials remain unchanged as historical snapshots. The terms entry template points to the immutable `draft-3` terms snapshot in `src/_includes/legal/draft-3/`. Privacy and consent entry templates remain on their immutable `draft-2` snapshots in `src/_includes/legal/draft-2/`. The older `draft-1` and `draft-2` terms snapshots are unchanged; when updating a draft, create another versioned snapshot and do not edit older content in place.
 
-## Minesweeku (game-specific documents)
+## Game documents built from shared paragraphs
 
-Minesweeku keeps its own terms and privacy policy because its data flow differs from Pinfinity Pinferno: no account, no developer server, progress stored only on the device, Google AdMob/UMP and optional local notifications.
+Each game gets its own terms and privacy policy, because data flows differ between games (Minesweeku: no account, no developer server, AdMob/UMP; Pinfinity Pinferno: accounts, server, purchases, Play Games). Paragraphs that are the same everywhere are written once and reused.
 
-- Source text: `legal-src/minesweeku/v<N>/{terms,privacy}.{ko,en}.txt`. The Korean text is the original; English is a convenience translation.
-- `src/_data/minesweekuLegal.js` holds the current `version` and `effective` date and builds both the web pages (`/ko|en/legal/minesweeku/terms.html`, `privacy.html`) and `/legal/minesweeku.json`.
-- The game downloads `/legal/minesweeku.json`, shows that text, and asks every player to agree again when `version` rises. It ships a bundled copy of the same JSON for offline first launch.
-- Never edit a released `v<N>` folder. For a material change, add `v<N+1>`, point `version` at it, update `effective`, and copy the new JSON into the game's bundled fallback before the next game release.
-- The pages stay `noindex` with a review notice until the legal review in the game repository (issue #70) is complete. After that, register `https://pdf-studio.co.kr/ko/legal/minesweeku/privacy.html` as the Play Console privacy policy URL.
+- `legal-src/library/<lang>.js`: the shared paragraph library, one file per language (ko is the original; en, zh, ja, vi, fr, es, de, it, pt, ar are translations). Each paragraph reads the game's facts and is left out when the feature is off. Every language keeps the same paragraph order and conditions; `npm run build` checks the counts.
+- `legal-src/games/<id>.js`: one game's facts (features, name, short description, currency names), the languages it supports, and its consent `version` and `effective` date.
+- `src/_data/legalDocs.js` composes `/<lang>/legal/<id>/terms.html`, `privacy.html` for every supported language and `/legal/<id>.json` (schema 2) for the game to download.
+- Adding a game: add `legal-src/games/<id>.js`; add a paragraph to every library file only when the game has a feature no paragraph covers yet (keep its condition off for other games).
+- Changing text: edit the paragraph in every language, then raise `version` and `effective` of each game whose output changes (players agree again). Previous texts stay in git history; `legal-src/archive/` keeps texts that shipped before this structure (Minesweeku v1).
+- Translations are drafts; the Korean original prevails. Pages stay `noindex` with a review notice until legal review. After review, register `https://pdf-studio.co.kr/ko/legal/<id>/privacy.html` as the game's Play Console privacy policy URL.
+- Ad consent by region (GDPR/UMP, US states, optional personalized ads elsewhere) is summarized in the privacy policy paragraph "Ad consent and choices"; the game repository documents how each is implemented and which AdMob console messages must be published.
