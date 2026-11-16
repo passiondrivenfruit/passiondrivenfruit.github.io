@@ -37,3 +37,13 @@ The user-facing game name is **Pinfinity Pinferno**. The existing implementation
 - Backward-compatible path `/ko/legal/pinballatro-consent.html` serves the same current Pinfinity Pinferno draft-2 content and canonicalizes to its new public route.
 
 The Korean pages are the source text. Other language footers identify them as Korean-only links; no legal translations are implied. `draft-1` URLs and content partials remain unchanged as historical snapshots. The terms entry template points to the immutable `draft-3` terms snapshot in `src/_includes/legal/draft-3/`. Privacy and consent entry templates remain on their immutable `draft-2` snapshots in `src/_includes/legal/draft-2/`. The older `draft-1` and `draft-2` terms snapshots are unchanged; when updating a draft, create another versioned snapshot and do not edit older content in place.
+
+## Minesweeku (game-specific documents)
+
+Minesweeku keeps its own terms and privacy policy because its data flow differs from Pinfinity Pinferno: no account, no developer server, progress stored only on the device, Google AdMob/UMP and optional local notifications.
+
+- Source text: `legal-src/minesweeku/v<N>/{terms,privacy}.{ko,en}.txt`. The Korean text is the original; English is a convenience translation.
+- `src/_data/minesweekuLegal.js` holds the current `version` and `effective` date and builds both the web pages (`/ko|en/legal/minesweeku/terms.html`, `privacy.html`) and `/legal/minesweeku.json`.
+- The game downloads `/legal/minesweeku.json`, shows that text, and asks every player to agree again when `version` rises. It ships a bundled copy of the same JSON for offline first launch.
+- Never edit a released `v<N>` folder. For a material change, add `v<N+1>`, point `version` at it, update `effective`, and copy the new JSON into the game's bundled fallback before the next game release.
+- The pages stay `noindex` with a review notice until the legal review in the game repository (issue #70) is complete. After that, register `https://pdf-studio.co.kr/ko/legal/minesweeku/privacy.html` as the Play Console privacy policy URL.

@@ -9,7 +9,8 @@ const expectedPages = [
   "ko/legal/terms.html", "ko/legal/privacy.html", "ko/legal/pinballatro-consent.html", "ko/legal/pinfinity-pinferno-consent.html",
   "ko/legal/draft-1/terms.html", "ko/legal/draft-1/privacy.html", "ko/legal/draft-1/pinballatro-consent.html",
   "ko/legal/draft-2/terms.html", "ko/legal/draft-2/privacy.html", "ko/legal/draft-2/pinfinity-pinferno-consent.html",
-  "ko/legal/draft-3/terms.html"
+  "ko/legal/draft-3/terms.html",
+  ...["ko", "en"].flatMap((lang) => [`${lang}/legal/minesweeku/terms.html`, `${lang}/legal/minesweeku/privacy.html`])
 ];
 const problems = [];
 const check = (condition, message) => { if (!condition) problems.push(message); };
@@ -24,6 +25,7 @@ function getMeta(html, name) {
 }
 
 function expectedAlternates(page) {
+  if (page.includes("/legal/minesweeku/")) { const doc = path.basename(page); return { ko: `/ko/legal/minesweeku/${doc}`, en: `/en/legal/minesweeku/${doc}` }; }
   if (page.includes("/legal/")) return { ko: expectedLegalCanonical(page) };
   const kind = page.endsWith("Minesweeper.html") ? "game" : page.endsWith("privacy.html") ? "privacy" : "home";
   if (kind === "home") return { ko: "/", en: "/en/index.html", ja: "/ja/index.html", zh: "/zh/index.html" };
@@ -60,7 +62,7 @@ for (const page of expectedPages) {
   check(new RegExp(`<html\\s+lang=["']${lang}["']`, "i").test(html), `${page}: wrong or missing html lang`);
   check(/<title>[^<]+<\/title>/i.test(html), `${page}: missing title`);
   check(Boolean(getMeta(html, "description")), `${page}: missing meta description`);
-  const expectedCanonicalPath = page === "index.html" || page === "ko/index.html" ? "/" : page.startsWith("ko/legal/") ? expectedLegalCanonical(page) : `/${page}`;
+  const expectedCanonicalPath = page === "index.html" || page === "ko/index.html" ? "/" : page.includes("/legal/minesweeku/") ? `/${page}` : page.startsWith("ko/legal/") ? expectedLegalCanonical(page) : `/${page}`;
   check(html.includes(`<link rel="canonical" href="https://pdf-studio.co.kr${expectedCanonicalPath}">`), `${page}: canonical URL is incorrect`);
   check(Boolean(getMeta(html, "og:title")) && Boolean(getMeta(html, "og:description")), `${page}: missing Open Graph title/description`);
   for (const [alternate, hrefPath] of Object.entries(alternatePaths)) {
@@ -72,7 +74,11 @@ for (const page of expectedPages) {
   check(/id=["']main-content["']/i.test(html), `${page}: missing main-content target`);
   const xLabel = page.startsWith("ko/") || page === "index.html" ? "X 채널" : page.startsWith("ja/") ? "Xチャンネル" : page.startsWith("zh/") ? "X 频道" : "X channel";
   check(new RegExp(`<a\\s+href=["']https://x\\.com/PDF_Studio["'][^>]*target=["']_blank["'][^>]*rel=["']noopener noreferrer["'][^>]*>${xLabel}<\\/a>`, "i").test(html), `${page}: missing accessible X channel link`);
-  if (page.includes("/legal/")) {
+  if (page.includes("/legal/minesweeku/")) {
+    check(/<meta name="robots" content="noindex, nofollow">/i.test(html), `${page}: game legal page must not be indexed until review`);
+    check(html.includes(page.startsWith("ko/") ? "검토용 초안" : "Draft under review"), `${page}: draft notice is missing`);
+    check(/<p class="legal-block">/.test(html), `${page}: document body is missing`);
+  } else if (page.includes("/legal/")) {
     check(/<meta name="robots" content="noindex, nofollow">/i.test(html), `${page}: legal draft must not be indexed`);
     check(html.includes("검토용 초안"), `${page}: legal draft notice is missing`);
     check(/<html\s+lang=["']ko["']/i.test(html), `${page}: legal source page must be Korean`);
@@ -110,8 +116,17 @@ for (const page of expectedPages) {
   }
 }
 
-const expectedStatic = ["CNAME", "app-ads.txt", "google77a4653943ed2177.html", "robots.txt", "sitemap.xml", "style.css", "assets/header/minesweeper.jpg", "assets/header/minesweeper.webp", "assets/ico/minesweeper.png", "assets/ico/minesweeper.webp", "assets/ico/android.png", "assets/ico/android.webp"];
+const expectedStatic = ["legal/minesweeku.json", "assets/ico/minesweeku.png", "assets/ico/minesweeku.webp", "CNAME", "app-ads.txt", "google77a4653943ed2177.html", "robots.txt", "sitemap.xml", "style.css", "assets/header/minesweeper.jpg", "assets/header/minesweeper.webp", "assets/ico/minesweeper.png", "assets/ico/minesweeper.webp", "assets/ico/android.png", "assets/ico/android.webp"];
 for (const file of expectedStatic) check(await exists(path.join(root, file)), `Missing public file: ${file}`);
+const legalJson = JSON.parse(await readFile(path.join(root, "legal/minesweeku.json"), "utf8").catch(() => "{}"));
+check(legalJson.schema === 1 && legalJson.game === "minesweeku" && Number.isInteger(legalJson.version) && legalJson.version >= 1 && /^\d{4}-\d{2}-\d{2}$/.test(legalJson.effective ?? ""), "legal/minesweeku.json: header fields are invalid");
+for (const doc of ["terms", "privacy"]) for (const lang of ["ko", "en"]) {
+  const entry = legalJson.documents?.[doc]?.[lang];
+  check(Boolean(entry?.title) && (entry?.text ?? "").length > 500 && entry?.url === `https://pdf-studio.co.kr/${lang}/legal/minesweeku/${doc}.html`, `legal/minesweeku.json: ${doc}.${lang} is incomplete`);
+  const html = await readFile(path.join(root, `${lang}/legal/minesweeku/${doc}.html`), "utf8").catch(() => "");
+  const lastLine = (entry?.text ?? "").trim().split("\n").pop().trim();
+  check(lastLine.length > 0 && html.includes(lastLine.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;")), `${lang}/legal/minesweeku/${doc}.html: page and JSON text differ`);
+}
 const cname = await readFile(path.join(root, "CNAME"), "utf8").catch(() => "");
 check(cname.trim() === "pdf-studio.co.kr", "CNAME does not point to pdf-studio.co.kr");
 const robots = await readFile(path.join(root, "robots.txt"), "utf8").catch(() => "");

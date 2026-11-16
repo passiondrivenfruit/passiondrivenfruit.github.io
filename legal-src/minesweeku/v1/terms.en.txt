@@ -1,0 +1,52 @@
+Minesweeku Terms of Service
+
+Effective date: November 14, 2026
+(This English version is provided for players outside Korea. If it differs from the Korean original, the Korean original prevails.)
+
+1. Purpose
+These terms set out the rights, duties and responsibilities between PassionDrivenFruit Studio (the "Company") and players regarding the mobile game "Minesweeku" (the "Game").
+
+2. Effect and changes
+1) These terms take effect when you agree to them the first time you launch the Game.
+2) The Company may change these terms within the limits of applicable law. When they change, we will let you know in the Game, and you will need to agree again to keep playing.
+
+3. The service
+1) The Game is a logic puzzle combining Sudoku and Minesweeper, offered free of charge.
+2) Stages are generated on your device, and no sign-up or login is needed.
+3) Playing does not require an internet connection. An internet connection is needed to watch ads or to go through the ad consent step.
+
+4. Game data
+1) Your progress, nickname, level and experience, tickets and hints, and settings are stored only on your device and are not sent to the Company's servers.
+2) If you delete the app or clear its data, your game data is deleted too, and the Company cannot restore it.
+
+5. In-game items
+1) Tickets and hints ("in-game items") refill over time or are given free of charge as a reward for rewarded ads you choose to watch.
+2) In-game items have no cash value and cannot be exchanged for money or other goods, refunded, or transferred to anyone else.
+3) The Company may change how in-game items are given (refill times, caps, number of ad rewards, etc.) to operate the Game.
+
+6. Ads
+1) The Game shows ads through Google AdMob. A full-screen ad may appear when a board ends, and you may choose to watch rewarded ads.
+2) A rewarded ad gives its reward only when watched to the end, and the number of rewarded ads per day is limited.
+3) Ad content is decided by advertisers and ad providers. The Company is not responsible for transactions made through ads.
+
+7. Notifications
+The Game sends device notifications when your tickets and hints are full only if you agree. You can turn them off at any time in the Game settings or your device settings.
+
+8. Your obligations
+You must not:
+1) modify or reverse-engineer the Game, or obtain in-game items or ad rewards by abnormal means;
+2) use a nickname that infringes others' rights or is offensive;
+3) otherwise violate applicable law or these terms.
+
+9. Changes to and end of the service
+The Company may change the Game or stop providing it when needed for operational or technical reasons. If the Game is discontinued, we will announce it in advance in the Game or on its store page.
+
+10. Limitation of liability
+1) The Company is not liable for damage caused by events beyond its control, such as natural disasters, device failures or network outages.
+2) The Company is not liable for the loss of game data stored on your device unless caused by its intent or gross negligence.
+
+11. Contact
+For questions about the Game, please use the developer contact listed on the Game's Google Play store page.
+
+12. Governing law
+These terms are governed by the laws of the Republic of Korea. Disputes are resolved by the court with jurisdiction under the Korean Civil Procedure Act.

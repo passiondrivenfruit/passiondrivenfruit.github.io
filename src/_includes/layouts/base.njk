@@ -14,7 +14,7 @@
 {% elif pageType == 'game' %}
   {% set title = copy.gameTitle %}
   {% set description = copy.gameDescriptionFull %}
-{% elif pageType == 'legal' %}
+{% elif pageType == 'legal' or pageType == 'gameLegal' %}
   {% set title = legalPageTitle %}
   {% set description = legalPageDescription %}
 {% else %}
@@ -26,9 +26,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ title }}</title>
   <meta name="description" content="{{ description }}">
-  {% if pageType == 'legal' %}<meta name="robots" content="noindex, nofollow">{% endif %}
+  {% if pageType == 'legal' or pageType == 'gameLegal' %}<meta name="robots" content="noindex, nofollow">{% endif %}
   <link rel="canonical" href="{{ site.origin }}{{ canonicalPath }}">
-  {% if pageType == 'legal' %}
+  {% if pageType == 'gameLegal' %}
+  {% set gameLegalPaths = minesweekuLegal.pages[docKey] %}
+  <link rel="alternate" hreflang="ko" href="{{ site.origin }}{{ gameLegalPaths.ko }}">
+  <link rel="alternate" hreflang="en" href="{{ site.origin }}{{ gameLegalPaths.en }}">
+  <link rel="alternate" hreflang="x-default" href="{{ site.origin }}{{ gameLegalPaths.ko }}">
+  {% elif pageType == 'legal' %}
   <link rel="alternate" hreflang="ko" href="{{ site.origin }}{{ canonicalPath }}">
   <link rel="alternate" hreflang="x-default" href="{{ site.origin }}{{ canonicalPath }}">
   {% else %}
@@ -63,6 +68,14 @@
     <div class="header-row">
       <a class="brand-link" href="{{ homePaths[language] }}">{{ site.name }}</a>
       {% include "language-switcher.njk" %}
+    </div>
+    {% elif pageType == 'gameLegal' %}
+    <div class="header-row">
+      <h1>{{ legalPageTitle }}</h1>
+      <nav class="lang-switcher" aria-label="{{ copy.languageLabel }}">
+        <a href="{{ minesweekuLegal.pages[docKey].ko }}" lang="ko"{% if language == 'ko' %} aria-current="page"{% endif %}>KO</a>
+        <a href="{{ minesweekuLegal.pages[docKey].en }}" lang="en"{% if language == 'en' %} aria-current="page"{% endif %}>EN</a>
+      </nav>
     </div>
     {% elif pageType == 'legal' %}
     <div class="header-row">

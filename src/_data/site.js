@@ -20,6 +20,13 @@ module.exports = {
   },
   copy: {
     en: {
+      upcomingHeading: "Coming soon",
+      upcomingTitle: "Minesweeku",
+      upcomingDescription: "A new Minesweeper puzzle: deduce the mines from Sudoku-style row, column and 3×3 box counts.",
+      upcomingStatus: "Coming to Google Play",
+      upcomingTermsLink: "Terms of Service",
+      upcomingPrivacyLink: "Privacy Policy",
+      upcomingLegalLang: "en",
       subtitle: "We make games with simple rules, careful thinking, and endless challenge.",
       skipLink: "Skip to main content",
       languageLabel: "Language selector",
@@ -59,6 +66,13 @@ module.exports = {
       privacyDescription: "Read the privacy policy for Minesweeper – Find and Seek, including information about Google AdMob and user choices."
     },
     ko: {
+      upcomingHeading: "출시 예정",
+      upcomingTitle: "마인스위쿠",
+      upcomingDescription: "스도쿠처럼 행·열·3×3 박스의 지뢰 수를 맞추며 추리하는 새로운 지뢰찾기 퍼즐입니다.",
+      upcomingStatus: "Google Play 출시 예정",
+      upcomingTermsLink: "이용약관",
+      upcomingPrivacyLink: "개인정보 처리방침",
+      upcomingLegalLang: "ko",
       subtitle: "단순한 규칙, 신중한 사고, 끝없는 도전을 담은 게임을 만듭니다.",
       skipLink: "본문으로 건너뛰기",
       languageLabel: "언어 선택",
@@ -98,6 +112,13 @@ module.exports = {
       privacyDescription: "Minesweeper – Find and Seek의 개인정보 처리방침, Google AdMob 정보와 사용자 선택 사항을 확인하세요."
     },
     ja: {
+      upcomingHeading: "近日公開",
+      upcomingTitle: "Minesweeku",
+      upcomingDescription: "行・列・3×3ボックスの地雷数から推理する、数独ルールの新しいマインスイーパーです。",
+      upcomingStatus: "Google Playで近日公開",
+      upcomingTermsLink: "利用規約（英語）",
+      upcomingPrivacyLink: "プライバシーポリシー（英語）",
+      upcomingLegalLang: "en",
       subtitle: "シンプルなルール、慎重な思考、終わりのない挑戦を楽しめるゲームを作っています。",
       skipLink: "メインコンテンツへ移動",
       languageLabel: "言語選択",
@@ -137,6 +158,13 @@ module.exports = {
       privacyDescription: "Minesweeper – Find and Seekのプライバシーポリシー、Google AdMobおよびユーザーの選択についてご確認ください。"
     },
     zh: {
+      upcomingHeading: "即将推出",
+      upcomingTitle: "Minesweeku",
+      upcomingDescription: "结合数独规则的全新扫雷：根据行、列和 3×3 宫格的地雷数推理出所有地雷。",
+      upcomingStatus: "即将登陆 Google Play",
+      upcomingTermsLink: "服务条款（英语）",
+      upcomingPrivacyLink: "隐私政策（英语）",
+      upcomingLegalLang: "en",
       subtitle: "我们制作规则简单、需要谨慎思考并充满挑战的游戏。",
       skipLink: "跳转到主要内容",
       languageLabel: "语言选择",
