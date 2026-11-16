@@ -4,6 +4,9 @@ const GOOGLE = "Norme sulla privacy di Google: https://policies.google.com/priva
 const MONTHS = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
 
 module.exports = {
+  // Written for games like Minesweeku only: other combinations of the flags below need the
+  // alternative sentences added first (see ko/en/ja/zh), and the build refuses them until then.
+  only: { banner: false, ump: true, adsChoice: true, inGameConsent: true, legalDownload: true },
   ui: {
     languageName: "Italiano",
     termsTitle: (n) => `Termini di servizio di ${n}`,
