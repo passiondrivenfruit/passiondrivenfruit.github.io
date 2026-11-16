@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="{{ doc.lang }}" dir="{{ doc.dir }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ doc.title }}</title>
+  <meta name="description" content="{{ doc.title }}">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="{{ doc.url }}">
+  {% for alt in doc.alternates %}
+  <link rel="alternate" hreflang="{{ alt.lang }}" href="{{ site.origin }}{{ alt.href }}">
+  {% endfor %}
+  <link rel="alternate" hreflang="x-default" href="{{ site.origin }}{{ doc.alternates[0].href }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ site.name }}">
+  <meta property="og:title" content="{{ doc.title }}">
+  <meta property="og:description" content="{{ doc.title }}">
+  <meta property="og:url" content="{{ doc.url }}">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">{{ doc.title }}</a>
+  <header class="container site-header">
+    <div class="header-row">
+      <h1>{{ doc.title }}</h1>
+    </div>
+    <nav class="lang-switcher legal-langs" aria-label="{{ doc.ui.languages }}">
+      {% for alt in doc.alternates %}
+      <a href="{{ alt.href }}" lang="{{ alt.lang }}"{% if alt.lang == doc.lang %} aria-current="page"{% endif %}>{{ alt.label }}</a>
+      {% endfor %}
+    </nav>
+  </header>
+  <main id="main-content" class="container policy legal-document">
+    <p class="draft-notice">{{ doc.ui.draft }}</p>
+    {% for line in doc.meta %}<p class="legal-meta">{{ line }}</p>{% endfor %}
+    {% for section in doc.sections %}
+    <h2>{{ section.heading }}</h2>
+    {% for paragraph in section.paragraphs %}<p>{{ paragraph }}</p>{% endfor %}
+    {% endfor %}
+  </main>
+  <footer class="container footer">
+    <nav class="footer-links" aria-label="{{ doc.ui.home }}">
+      <a href="/">{{ doc.ui.home }}</a>
+      <a href="https://x.com/PDF_Studio" target="_blank" rel="noopener noreferrer">X</a>
+    </nav>
+    <p>© 2026 {{ site.name }}</p>
+  </footer>
+</body>
+</html>

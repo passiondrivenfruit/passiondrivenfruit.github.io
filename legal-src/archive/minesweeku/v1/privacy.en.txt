@@ -1,0 +1,39 @@
+Minesweeku Privacy Policy
+
+Effective date: November 14, 2026
+(This English version is provided for players outside Korea. If it differs from the Korean original, the Korean original prevails.)
+
+PassionDrivenFruit Studio (the "Company") values the personal information of players of "Minesweeku" (the "Game") and follows applicable law.
+
+1. Information the Company collects directly
+The Company does not collect or store your name, contact details, account or other personal information on any server. Your progress, nickname, level, in-game items and settings are stored only on your device. Your nickname never leaves your device.
+
+2. Information processed to show ads
+The Game uses Google AdMob and the Google User Messaging Platform (UMP) to show ads. In doing so, Google may collect and process:
+- your advertising ID (Android advertising ID), device information (model, OS version, language, etc.), approximate location (based on IP address), and ad views and clicks
+- for: showing ads, measuring ad performance, preventing ad fraud and, if you consent, personalized ads
+- controller: Google LLC. For details, see Google's Privacy Policy (https://policies.google.com/privacy) and how Google uses information in ads (https://policies.google.com/technologies/ads).
+In regions that require consent, such as the EEA and the UK, a consent form appears before ads are shown, and you can change your choice under "Privacy options" in the Game settings.
+
+3. Advertising ID and opting out of personalized ads
+You can reset or delete your advertising ID in your device settings (Settings > Google > Ads, or Settings > Privacy > Ads) to opt out of personalized ads.
+
+4. Device permissions
+- Internet and network state: to load and show ads.
+- Notifications (optional): to tell you when tickets and hints are full. You can play without allowing them.
+- Vibration: a short response when you press and hold a cell.
+
+5. Retention and deletion
+Game data on your device is deleted as soon as you delete the app or clear its data. The Company keeps no separate copy. Information processed by Google is kept according to Google's policies.
+
+6. Your rights
+You can delete the app data at any time, change or withdraw your ad consent, and turn off notifications.
+
+7. Children
+The Company does not directly collect personal information from children.
+
+8. Contact
+For privacy questions, please use the developer contact listed on the Game's Google Play store page.
+
+9. Changes
+If this policy changes, we will let you know in the Game and ask you to confirm again.

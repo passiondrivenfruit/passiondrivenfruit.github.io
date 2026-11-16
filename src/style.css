@@ -91,6 +91,12 @@ ul { padding-left: 1.4rem; }
 .policy p { margin-block: 0.8rem; }
 .policy h2 { margin-top: 1.8rem; }
 .policy h3 { margin-top: 1.2rem; }
+.legal-langs { flex-wrap: wrap; margin-top: 0.75rem; }
+[dir="rtl"] .policy { text-align: right; }
+.legal-meta { color: var(--muted); font-size: 0.9rem; }
+.game-item.upcoming .game-platforms span { font-weight: 600; }
+.game-legal { margin: 0.4rem 0 0; font-size: 0.85rem; }
+.game-item.upcoming .game-icon img { image-rendering: pixelated; }
 .draft-notice { padding: 0.9rem 1rem; border-left: 4px solid #9a6700; border-radius: 0.25rem; background: #fff8c5; color: #3d2e00; }
 .language-note { color: var(--muted); font-size: 0.9rem; }
 

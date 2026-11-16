@@ -110,8 +110,46 @@ for (const page of expectedPages) {
   }
 }
 
-const expectedStatic = ["CNAME", "app-ads.txt", "google77a4653943ed2177.html", "robots.txt", "sitemap.xml", "style.css", "assets/header/minesweeper.jpg", "assets/header/minesweeper.webp", "assets/ico/minesweeper.png", "assets/ico/minesweeper.webp", "assets/ico/android.png", "assets/ico/android.webp"];
+const expectedStatic = ["assets/ico/minesweeku.png", "assets/ico/minesweeku.webp", "CNAME", "app-ads.txt", "google77a4653943ed2177.html", "robots.txt", "sitemap.xml", "style.css", "assets/header/minesweeper.jpg", "assets/header/minesweeper.webp", "assets/ico/minesweeper.png", "assets/ico/minesweeper.webp", "assets/ico/android.png", "assets/ico/android.webp"];
 for (const file of expectedStatic) check(await exists(path.join(root, file)), `Missing public file: ${file}`);
+// Game legal documents: every game, every language it supports, both documents, page and JSON in sync.
+const { createRequire } = await import("node:module");
+const requireCjs = createRequire(import.meta.url);
+const legalRoot = path.resolve("legal-src");
+const { readdirSync } = await import("node:fs");
+const library = Object.fromEntries(readdirSync(path.join(legalRoot, "library")).map((f) => [path.basename(f, ".js"), requireCjs(path.join(legalRoot, "library", f))]));
+const libLangs = Object.keys(library);
+for (const lang of libLangs) {
+  for (const doc of ["terms", "privacy"]) check(library[lang][doc].length === library.ko[doc].length, `legal library ${lang}: ${doc} has ${library[lang][doc].length} paragraphs, ko has ${library.ko[doc].length}`);
+  for (const key of Object.keys(library.ko.ui)) if (key !== "translationNote" && key !== "dir") check(library[lang].ui[key] !== undefined, `legal library ${lang}: ui.${key} missing`);
+}
+let legalPages = 0;
+for (const file of readdirSync(path.join(legalRoot, "games"))) {
+  const game = requireCjs(path.join(legalRoot, "games", file));
+  const json = JSON.parse(await readFile(path.join(root, `legal/${game.id}.json`), "utf8").catch(() => "{}"));
+  check(json.schema === 2 && json.game === game.id && json.version === game.version && json.effective === game.effective, `legal/${game.id}.json: header fields are invalid`);
+  check(JSON.stringify(json.languages) === JSON.stringify(game.languages), `legal/${game.id}.json: languages differ from the game`);
+  for (const lang of game.languages) {
+    check(libLangs.includes(lang), `${game.id}: no legal library for ${lang}`);
+    for (const doc of ["terms", "privacy"]) {
+      const entry = json.documents?.[doc]?.[lang];
+      const rel = `${lang}/legal/${game.id}/${doc}.html`;
+      check(Boolean(entry?.title) && (entry?.text ?? "").length > 400 && entry?.url === `https://pdf-studio.co.kr/${rel}`, `legal/${game.id}.json: ${doc}.${lang} is incomplete`);
+      const html = await readFile(path.join(root, rel), "utf8").catch(() => "");
+      legalPages += 1;
+      check(html.length > 0, `Missing generated page: ${rel}`);
+      check(new RegExp(`<html lang="${lang}" dir="${lang === "ar" ? "rtl" : "ltr"}">`).test(html), `${rel}: wrong html lang/dir`);
+      check(/<meta name="robots" content="noindex, nofollow">/.test(html), `${rel}: must not be indexed until legal review`);
+      check(html.includes(`<link rel="canonical" href="https://pdf-studio.co.kr/${rel}">`), `${rel}: canonical URL is incorrect`);
+      for (const alt of game.languages) check(html.includes(`hreflang="${alt}" href="https://pdf-studio.co.kr/${alt}/legal/${game.id}/${doc}.html"`), `${rel}: missing ${alt} alternate`);
+      const escape = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+      const lastLine = (entry?.text ?? "").trim().split("\n").pop().trim();
+      check(lastLine.length > 0 && html.includes(escape(lastLine)), `${rel}: page and JSON text differ`);
+      check(!/undefined|null|\[object/.test(entry?.text ?? ""), `${rel}: unfilled placeholder in text`);
+    }
+  }
+}
+check(legalPages > 0, "no game legal pages were checked");
 const cname = await readFile(path.join(root, "CNAME"), "utf8").catch(() => "");
 check(cname.trim() === "pdf-studio.co.kr", "CNAME does not point to pdf-studio.co.kr");
 const robots = await readFile(path.join(root, "robots.txt"), "utf8").catch(() => "");

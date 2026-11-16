@@ -29,6 +29,26 @@
     </div>
   </section>
 
+  <section aria-labelledby="upcoming-heading">
+    <h2 id="upcoming-heading">{{ copy.upcomingHeading }}</h2>
+    <div class="game-list">
+      <article class="game-item upcoming">
+        <span class="game-icon">
+          <img src="/assets/ico/minesweeku.webp" alt="" width="96" height="96" loading="lazy" decoding="async">
+        </span>
+        <div class="game-info">
+          <h3>{{ copy.upcomingTitle }}</h3>
+          <p class="game-desc">{{ copy.upcomingDescription }}</p>
+          <p class="game-legal"><a href="{{ legalDocs.link('minesweeku', 'terms', language) }}">{{ copy.upcomingTermsLink }}</a> · <a href="{{ legalDocs.link('minesweeku', 'privacy', language) }}">{{ copy.upcomingPrivacyLink }}</a></p>
+        </div>
+        <div class="game-platforms">
+          <span>{{ copy.upcomingStatus }}</span>
+          <img src="/assets/ico/android.webp" alt="" width="32" height="32" loading="lazy" decoding="async">
+        </div>
+      </article>
+    </div>
+  </section>
+
   <section aria-labelledby="contact-heading">
     <h2 id="contact-heading">{{ copy.contactHeading }}</h2>
     <p>{{ copy.contact }}<br><a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
