@@ -89,7 +89,7 @@ ul { padding-left: 1.4rem; }
 .card-slot { display: flex; flex: 0 0 auto; scroll-snap-align: center; }
 .game-card {
   --ink: #2a1d10;
-  display: flex; flex-direction: column; gap: 0.4rem; width: 17.5rem; height: 100%; padding: 0.6rem;
+  display: flex; flex-direction: column; gap: 0.4rem; width: 19rem; height: 100%; padding: 0.6rem;
   border: 3px solid var(--ink); border-radius: 0.7rem; cursor: pointer; color: var(--ink);
   background: linear-gradient(155deg, color-mix(in srgb, var(--frame) 70%, #fff) 0%, var(--frame) 45%, color-mix(in srgb, var(--frame) 75%, #000) 100%);
   box-shadow: 0 10px 24px rgba(25, 33, 43, 0.22), inset 0 0 0 2px rgba(255, 255, 255, 0.25);
@@ -112,8 +112,8 @@ a.card-attr:hover { background: radial-gradient(circle at 35% 30%, #fff, #b9d79a
 .card-attr.is-soon img { filter: grayscale(1); opacity: 0.55; }
 .card-status { display: flex; justify-content: flex-end; gap: 0.3rem; min-height: 1.2rem; color: #fff6dc; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.02em; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45); }
 .card-status span::before { content: "★ "; color: #ffd75e; }
-.card-art { display: grid; place-items: center; aspect-ratio: 1; overflow: hidden; border: 3px solid var(--ink); background: radial-gradient(circle at 50% 40%, #3b5a44, #142019); }
-.card-art img { width: 80%; height: 80%; object-fit: contain; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45)); }
+.card-art { display: grid; place-items: center; aspect-ratio: 5 / 4; overflow: hidden; border: 3px solid var(--ink); background: radial-gradient(circle at 50% 40%, #3b5a44, #142019); }
+.card-art img { width: 82%; height: 82%; object-fit: contain; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45)); }
 .card-art img.pixelated { image-rendering: pixelated; }
 .card-text { flex: 1; display: flex; flex-direction: column; padding: 0.35rem 0.5rem 0.3rem; border: 2px solid var(--ink); border-radius: 0.2rem; background: #f7f0dc; font-size: 0.74rem; line-height: 1.45; }
 .card-text p { margin: 0; }
@@ -160,7 +160,7 @@ a.card-attr:hover { background: radial-gradient(circle at 35% 30%, #fff, #b9d79a
 @media (max-width: 600px) {
   .container { width: min(100% - 1.5rem, 800px); padding-block: 1.1rem; }
   .header-row { align-items: flex-start; }
-  .game-card { width: min(17.5rem, calc(100vw - 4.5rem)); }
+  .game-card { width: min(19rem, calc(100vw - 4.5rem)); }
   .rail-arrow { display: none; }
   .gallery-track figure { padding-inline: 0.5rem; }
   .gallery-nav { display: none; }
