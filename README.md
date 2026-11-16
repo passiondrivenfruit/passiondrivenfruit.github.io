@@ -18,7 +18,7 @@ Open `http://localhost:8080` to review the site. `npm start` serves and watches 
 
 ## Routes and deployment
 
-The home page exists in 11 languages (ko, en, ja, zh, vi, fr, es, de, it, pt, ar): `/` is Korean and the canonical default, the others are `/<lang>/index.html`. A language menu sits at the top left of every page (top right in Arabic, which is right-to-left). Home copy lives in `src/_data/site.js`.
+The home page exists in 11 languages (ko, en, ja, zh, vi, fr, es, de, it, pt, ar): `/` is Korean and the canonical default, the others are `/<lang>/index.html`. A language menu sits at the top right of every page (top left in Arabic, which is right-to-left). Home copy lives in `src/_data/site.js`.
 
 Games are shown as trading-card style cards in a horizontal, swipeable rail: name and store "attribute" icon on top, the icon as card art, a type line and short text, and the privacy policy and terms where a card's stats would be. Clicking a card (anywhere but its links) opens a screenshot gallery. There are no game detail pages; the old `/<lang>/Minesweeper.html` URLs redirect to the home page. Card data (store links, icon, text in every language, screenshots) is in each game's `legal-src/games/<id>.js`; screenshots are in `src/assets/games/<id>/`.
 
