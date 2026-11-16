@@ -1,26 +1,15 @@
 <!doctype html>
-{% set htmlLang = 'zh-CN' if language == 'zh' else language %}
-{% set ogType = 'product' if pageType == 'game' else 'website' %}
-{% set twitterCard = 'summary_large_image' if pageType == 'game' else 'summary' %}
 {% set copy = site.copy[language] %}
-<html lang="{{ htmlLang }}">
-{% set localizedPaths = site.paths[pageType] %}
-{% set homePaths = site.paths.home %}
-{% set privacyPaths = site.paths.privacy %}
-{% set pageLinks = localizedPaths %}
-{% if pageType == 'home' %}
-  {% set title = copy.homeTitle %}
-  {% set description = copy.homeDescription %}
-{% elif pageType == 'game' %}
-  {% set title = copy.gameTitle %}
-  {% set description = copy.gameDescriptionFull %}
-{% elif pageType == 'legal' %}
+{% set loc = null %}
+{% for l in site.locales %}{% if l.code == language %}{% set loc = l %}{% endif %}{% endfor %}
+{% if pageType == 'legal' %}
   {% set title = legalPageTitle %}
   {% set description = legalPageDescription %}
 {% else %}
-  {% set title = copy.privacyTitle %}
-  {% set description = copy.privacyDescription %}
+  {% set title = copy.homeTitle %}
+  {% set description = copy.homeDescription %}
 {% endif %}
+<html lang="{{ loc.htmlLang }}" dir="{{ loc.dir or 'ltr' }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,63 +22,51 @@
   <link rel="alternate" hreflang="x-default" href="{{ site.origin }}{{ canonicalPath }}">
   {% else %}
     {% for item in site.locales %}
-  <link rel="alternate" hreflang="{{ item.htmlLang }}" href="{{ site.origin }}{{ localizedPaths[item.code] }}">
+  <link rel="alternate" hreflang="{{ item.htmlLang }}" href="{{ site.origin }}{{ site.homePaths[item.code] }}">
     {% endfor %}
-  <link rel="alternate" hreflang="x-default" href="{{ site.origin }}{{ localizedPaths.ko }}">
+  <link rel="alternate" hreflang="x-default" href="{{ site.origin }}/">
   {% endif %}
-  <meta property="og:type" content="{{ ogType }}">
+  <meta property="og:type" content="website">
   <meta property="og:site_name" content="{{ site.name }}">
   <meta property="og:title" content="{{ title }}">
   <meta property="og:description" content="{{ description }}">
   <meta property="og:url" content="{{ site.origin }}{{ canonicalPath }}">
-  {% if pageType == 'game' %}<meta property="og:image" content="{{ site.origin }}/assets/header/minesweeper.webp">{% endif %}
-  <meta name="twitter:card" content="{{ twitterCard }}">
+  <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="{{ title }}">
   <meta name="twitter:description" content="{{ description }}">
-  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" type="image/x-icon">
-  <link rel="icon" href="/assets/ico/favicon-32.png" sizes="32x32" type="image/png">
-  <link rel="icon" href="/assets/ico/favicon-192.png" sizes="192x192" type="image/png">
-  <link rel="apple-touch-icon" href="/assets/ico/apple-touch-icon.png" sizes="180x180">
+{% include "head-icons.njk" %}
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">{{ copy.skipLink }}</a>
   <header class="container site-header">
+    <div class="top-bar">
+      {% set menuItems = [] %}
+      {% for l in site.locales %}{% set menuItems = (menuItems.push({ code: l.code, htmlLang: l.htmlLang, label: l.label, href: site.homePaths[l.code] }), menuItems) %}{% endfor %}
+      {% set menuCurrent = language %}{% set menuLabel = copy.languageLabel %}
+      {% include "lang-menu.njk" %}
+      {% if pageType != 'home' %}<a class="brand-link" href="{{ site.homePaths[language] }}">{{ site.name }}</a>{% endif %}
+    </div>
     {% if pageType == 'home' %}
-    <div class="header-row">
-      <div class="brand">
-        <h1><a href="{{ homePaths[language] }}">{{ site.name }}</a></h1>
-        <p class="subtitle">{{ copy.subtitle }}</p>
-      </div>
-      {% include "language-switcher.njk" %}
-    </div>
-    {% elif pageType == 'game' %}
-    <div class="header-row">
-      <a class="brand-link" href="{{ homePaths[language] }}">{{ site.name }}</a>
-      {% include "language-switcher.njk" %}
-    </div>
-    {% elif pageType == 'legal' %}
-    <div class="header-row">
-      <h1>{{ legalPageTitle }}</h1>
-      <span class="language-note">한국어 원문</span>
+    <div class="brand">
+      <h1><a href="{{ site.homePaths[language] }}">{{ site.name }}</a></h1>
+      <p class="subtitle">{{ copy.subtitle }}</p>
     </div>
     {% else %}
     <div class="header-row">
-      <h1>{{ copy.privacyTitle }}</h1>
-      {% include "language-switcher.njk" %}
+      <h1>{{ legalPageTitle }}</h1>
+      <span class="language-note">한국어 원문</span>
     </div>
     {% endif %}
   </header>
   {{ content | safe }}
   <footer class="container footer">
     <nav class="footer-links" aria-label="{{ copy.footerLabel }}">
-      <a href="{{ homePaths[language] }}">{{ copy.homeLink }}</a>
-      <a href="{{ privacyPaths[language] }}">{{ copy.privacyLink }}</a>
-      <a href="{{ site.paths.legalTerms }}">{{ copy.termsLink }}</a>
-      <a href="{{ site.paths.legalPrivacy }}">{{ copy.studioPrivacyLink }}</a>
+      <a href="{{ site.homePaths[language] }}">{{ copy.homeLink }}</a>
       <a href="https://x.com/PDF_Studio" target="_blank" rel="noopener noreferrer">{{ copy.xChannel }}</a>
     </nav>
     <p>© 2026 {{ site.name }}</p>
   </footer>
+  <script src="/site.js" defer></script>
 </body>
 </html>

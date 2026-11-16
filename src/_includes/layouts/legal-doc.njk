@@ -1,11 +1,12 @@
 <!doctype html>
+{% set home = site.homePaths[doc.lang] or "/" %}
 <html lang="{{ doc.lang }}" dir="{{ doc.dir }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ doc.title }}</title>
   <meta name="description" content="{{ doc.title }}">
-  <meta name="robots" content="noindex, nofollow">
+  {% if doc.draft %}<meta name="robots" content="noindex, nofollow">{% endif %}
   <link rel="canonical" href="{{ doc.url }}">
   {% for alt in doc.alternates %}
   <link rel="alternate" hreflang="{{ alt.lang }}" href="{{ site.origin }}{{ alt.href }}">
@@ -16,26 +17,25 @@
   <meta property="og:title" content="{{ doc.title }}">
   <meta property="og:description" content="{{ doc.title }}">
   <meta property="og:url" content="{{ doc.url }}">
-  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" type="image/x-icon">
-  <link rel="icon" href="/assets/ico/favicon-32.png" sizes="32x32" type="image/png">
-  <link rel="icon" href="/assets/ico/favicon-192.png" sizes="192x192" type="image/png">
-  <link rel="apple-touch-icon" href="/assets/ico/apple-touch-icon.png" sizes="180x180">
+{% include "head-icons.njk" %}
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">{{ doc.title }}</a>
   <header class="container site-header">
+    <div class="top-bar">
+      {% set menuItems = [] %}
+      {% for alt in doc.alternates %}{% set menuItems = (menuItems.push({ code: alt.lang, htmlLang: alt.lang, label: alt.label, href: alt.href }), menuItems) %}{% endfor %}
+      {% set menuCurrent = doc.lang %}{% set menuLabel = doc.ui.languages %}
+      {% include "lang-menu.njk" %}
+      <a class="brand-link" href="{{ home }}">{{ site.name }}</a>
+    </div>
     <div class="header-row">
       <h1>{{ doc.title }}</h1>
     </div>
-    <nav class="lang-switcher legal-langs" aria-label="{{ doc.ui.languages }}">
-      {% for alt in doc.alternates %}
-      <a href="{{ alt.href }}" lang="{{ alt.lang }}"{% if alt.lang == doc.lang %} aria-current="page"{% endif %}>{{ alt.label }}</a>
-      {% endfor %}
-    </nav>
   </header>
   <main id="main-content" class="container policy legal-document">
-    <p class="draft-notice">{{ doc.ui.draft }}</p>
+    {% if doc.draft %}<p class="draft-notice">{{ doc.ui.draft }}</p>{% endif %}
     {% for line in doc.meta %}<p class="legal-meta">{{ line }}</p>{% endfor %}
     {% for section in doc.sections %}
     <h2>{{ section.heading }}</h2>
@@ -44,10 +44,11 @@
   </main>
   <footer class="container footer">
     <nav class="footer-links" aria-label="{{ doc.ui.home }}">
-      <a href="/">{{ doc.ui.home }}</a>
+      <a href="{{ home }}">{{ doc.ui.home }}</a>
       <a href="https://x.com/PDF_Studio" target="_blank" rel="noopener noreferrer">X</a>
     </nav>
     <p>© 2026 {{ site.name }}</p>
   </footer>
+  <script src="/site.js" defer></script>
 </body>
 </html>

@@ -5,9 +5,14 @@ eleventyExcludeFromCollections: true
 ---
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-{% for url in site.urls %}  <url>
-    <loc>{{ site.origin }}{{ url.path }}</loc>
-    <changefreq>{{ url.changefreq }}</changefreq>
-    <priority>{{ url.priority }}</priority>
+{% for l in site.locales %}  <url>
+    <loc>{{ site.origin }}{{ site.homePaths[l.code] }}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
   </url>
-{% endfor %}</urlset>
+{% endfor %}{% for p in legalDocs.pages %}{% if not p.draft and not p.alias %}  <url>
+    <loc>{{ p.url }}</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+{% endif %}{% endfor %}</urlset>

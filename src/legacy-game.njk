@@ -1,0 +1,21 @@
+---
+pagination:
+  data: site.legacyGamePages
+  size: 1
+  alias: lang
+permalink: "{{ lang }}/Minesweeper.html"
+layout: false
+eleventyExcludeFromCollections: true
+---
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex">
+  <meta http-equiv="refresh" content="0; url={{ site.homePaths[lang] }}">
+  <link rel="canonical" href="{{ site.origin }}{{ site.homePaths[lang] }}">
+  <title>{{ site.name }}</title>
+{% include "head-icons.njk" %}
+</head>
+<body><p><a href="{{ site.homePaths[lang] }}">{{ site.name }}</a></p></body>
+</html>
