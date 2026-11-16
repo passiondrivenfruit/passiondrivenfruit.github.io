@@ -6,7 +6,7 @@
 module.exports = {
   id: "minesweeper",
   order: 1,
-  version: 1,
+  version: 2,
   effective: "2026-11-17",
   draft: false, // replaces the policy that has been live at /<lang>/privacy.html since 2026-05-03
   languages: ["ko", "en", "ja", "zh"],
@@ -22,7 +22,7 @@ module.exports = {
   features: {
     paid: false, account: false, localOnly: true, offline: true, currency: false, iap: false,
     ads: true, banner: true, ump: false, adsChoice: false, inGameConsent: false, legalDownload: false,
-    nickname: false, notifications: false, vibrate: true
+    nickname: false, notifications: false, vibrate: true, noBackup: false // allowBackup="true"
   },
   card: {
     frame: "#3f6a4a",

@@ -9,6 +9,7 @@ const origin = "https://pdf-studio.co.kr";
 const DOCS = ["terms", "privacy"];
 const library = Object.fromEntries(fs.readdirSync(path.join(root, "library")).filter((f) => f.endsWith(".js"))
   .map((f) => [path.basename(f, ".js"), require(path.join(root, "library", f))]));
+const studio = require(path.join(root, "studio.js"));
 const games = fs.readdirSync(path.join(root, "games")).filter((f) => f.endsWith(".js"))
   .map((f) => require(path.join(root, "games", f))).sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
 
@@ -21,7 +22,8 @@ function compose(game, lang, doc) {
     ...game.features,
     name: game.name[lang] ?? game.name.default,
     about: game.about[lang],
-    currencies: game.currencies?.[lang]
+    currencies: game.currencies?.[lang],
+    studio: studio.name, email: studio.email, web: studio.web
   };
   if (!g.about || (g.currency && !g.currencies)) throw new Error(`${game.id}: game text missing for ${lang}`);
   for (const [flag, value] of Object.entries(lib.only ?? {})) {
