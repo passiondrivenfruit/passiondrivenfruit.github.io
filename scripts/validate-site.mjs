@@ -8,6 +8,7 @@ const root = path.resolve("dist");
 const origin = "https://pdf-studio.co.kr";
 const site = requireCjs(path.resolve("src/_data/site.js"));
 const legalDocs = requireCjs(path.resolve("src/_data/legalDocs.js"));
+const history = requireCjs(path.resolve("src/_data/history.js"));
 const legalRoot = path.resolve("legal-src");
 const library = Object.fromEntries(readdirSync(path.join(legalRoot, "library")).map((f) => [path.basename(f, ".js"), requireCjs(path.join(legalRoot, "library", f))]));
 const games = readdirSync(path.join(legalRoot, "games")).map((f) => requireCjs(path.join(legalRoot, "games", f)));
@@ -91,7 +92,32 @@ for (const loc of site.locales) {
     check(shots.length > 0, `${rel}: card ${game.id} has no screenshots`);
     for (const shot of shots) check(await exists(path.join(root, shot.slice(1))), `${rel}: missing screenshot ${shot}`);
   }
+  check(html.includes(`<p class="history-link"><a href="${history.paths[loc.code]}">`), `${rel}: home must link the history page`);
   check(/<dialog class="gallery"/.test(html) && html.includes('<script src="/site.js" defer></script>'), `${rel}: missing screenshot gallery`);
+  await checkLinks(rel, html);
+}
+
+// Studio history: every site language, events newest first, each with its month and title.
+for (const event of history.events) {
+  check(/^\d{4}-(0[1-9]|1[0-2])$/.test(event.date) && ["release", "milestone"].includes(event.kind), `history: event ${event.date} needs a YYYY-MM date and a known kind`);
+  check(event.kind !== "release" || Boolean(history.games[event.game]), `history: release ${event.date} must name a known game`);
+  for (const loc of site.locales) check(Boolean(event.title?.[loc.code]) && (!event.text || Boolean(event.text[loc.code])), `history: event ${event.date} is missing ${loc.code} text`);
+}
+check(history.events.some((e) => e.date === "2026-02" && e.kind === "release" && e.game === "minesweeper"), "history: the Minesweeper launch (2026-02) must stay in the history");
+for (const loc of site.locales) {
+  const href = history.paths[loc.code];
+  const rel = relOf(href);
+  const html = await read(rel);
+  check(html.length > 0, `Missing history page: ${rel}`);
+  if (!html) continue;
+  checkCommon(rel, html, { lang: loc.htmlLang, dir: loc.dir ?? "ltr", canonical: href });
+  for (const alt of site.locales) check(html.includes(`<link rel="alternate" hreflang="${alt.htmlLang}" href="${origin}${history.paths[alt.code]}">`), `${rel}: missing ${alt.code} alternate`);
+  const menu = html.match(/<details class="lang-menu">([\s\S]*?)<\/details>/)?.[1] ?? "";
+  check(menu.includes(`href="${href}" lang="${loc.htmlLang}" hreflang="${loc.htmlLang}" aria-current="page"`), `${rel}: language menu must switch between history pages`);
+  check(html.includes(`<h1>${escape(history.copy[loc.code].heading)}</h1>`), `${rel}: missing history heading`);
+  const dates = [...html.matchAll(/<time class="timeline-date" datetime="([^"]+)">/g)].map((m) => m[1]);
+  check(dates.length === history.events.length && dates.every((d, i) => i === 0 || dates[i - 1] >= d), `${rel}: timeline must list every event, newest first`);
+  for (const event of history.events) check(html.includes(escape(event.title[loc.code])) && html.includes(escape(history.monthLabel(event.date, loc.code))), `${rel}: event ${event.date} is missing its title or month`);
   await checkLinks(rel, html);
 }
 
@@ -170,16 +196,17 @@ check((await read("CNAME")).trim() === "pdf-studio.co.kr", "CNAME does not point
 const robots = await read("robots.txt");
 check(robots.includes(`${origin}/sitemap.xml`) && !robots.includes("passiondrivenfruit.github.io"), "robots.txt must reference only the canonical sitemap");
 const sitemap = await read("sitemap.xml");
-const sitemapUrls = [...site.locales.map((l) => origin + site.homePaths[l.code]), ...legalDocs.pages.filter((p) => !p.draft && !p.alias).map((p) => p.url)];
+const sitemapUrls = [...site.locales.map((l) => origin + site.homePaths[l.code]), ...site.locales.map((l) => origin + history.paths[l.code]), ...legalDocs.pages.filter((p) => !p.draft && !p.alias).map((p) => p.url)];
 for (const url of sitemapUrls) check(sitemap.includes(`<loc>${url}</loc>`), `Sitemap is missing ${url}`);
 check((sitemap.match(/<url>/g) ?? []).length === sitemapUrls.length && !sitemap.includes("passiondrivenfruit.github.io"), "Sitemap must list exactly the canonical public pages");
 const css = await read("style.css");
 check(css.includes("@media (max-width: 600px)") && css.includes("max-width: 100%") && css.includes("overflow-wrap: anywhere"), "Responsive layout rules are missing");
+check(css.includes(".timeline-item") && css.includes(".timeline-body"), "History timeline styles are missing");
 check(css.includes(".game-card:hover") && css.includes("scroll-snap-type: x mandatory") && css.includes(".gallery::backdrop") && css.includes(".lang-menu ul"), "Card, rail, gallery or language menu styles are missing");
 
 if (problems.length) {
   console.error(`Site validation failed (${problems.length} issue${problems.length === 1 ? "" : "s"}):\n- ${problems.join("\n- ")}`);
   process.exitCode = 1;
 } else {
-  console.log(`Validated ${pages} pages: ${site.locales.length} home pages with ${cardGames.length} game cards, game documents, legal drafts, links, images, sitemap and styles.`);
+  console.log(`Validated ${pages} pages: ${site.locales.length} home pages with ${cardGames.length} game cards, ${site.locales.length} history pages with ${history.events.length} event${history.events.length === 1 ? "" : "s"}, game documents, legal drafts, links, images, sitemap and styles.`);
 }

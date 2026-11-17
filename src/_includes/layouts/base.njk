@@ -2,9 +2,13 @@
 {% set copy = site.copy[language] %}
 {% set loc = null %}
 {% for l in site.locales %}{% if l.code == language %}{% set loc = l %}{% endif %}{% endfor %}
+{% set pagePaths = history.paths if pageType == 'history' else site.homePaths %}
 {% if pageType == 'legal' %}
   {% set title = legalPageTitle %}
   {% set description = legalPageDescription %}
+{% elif pageType == 'history' %}
+  {% set title = history.copy[language].title %}
+  {% set description = history.copy[language].description %}
 {% else %}
   {% set title = copy.homeTitle %}
   {% set description = copy.homeDescription %}
@@ -22,9 +26,9 @@
   <link rel="alternate" hreflang="x-default" href="{{ site.origin }}{{ canonicalPath }}">
   {% else %}
     {% for item in site.locales %}
-  <link rel="alternate" hreflang="{{ item.htmlLang }}" href="{{ site.origin }}{{ site.homePaths[item.code] }}">
+  <link rel="alternate" hreflang="{{ item.htmlLang }}" href="{{ site.origin }}{{ pagePaths[item.code] }}">
     {% endfor %}
-  <link rel="alternate" hreflang="x-default" href="{{ site.origin }}/">
+  <link rel="alternate" hreflang="x-default" href="{{ site.origin }}{{ pagePaths.ko }}">
   {% endif %}
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="{{ site.name }}">
@@ -42,7 +46,7 @@
   <header class="container site-header">
     <div class="top-bar">
       {% set menuItems = [] %}
-      {% for l in site.locales %}{% set menuItems = (menuItems.push({ code: l.code, htmlLang: l.htmlLang, label: l.label, href: site.homePaths[l.code] }), menuItems) %}{% endfor %}
+      {% for l in site.locales %}{% set menuItems = (menuItems.push({ code: l.code, htmlLang: l.htmlLang, label: l.label, href: pagePaths[l.code] }), menuItems) %}{% endfor %}
       {% set menuCurrent = language %}{% set menuLabel = copy.languageLabel %}
       {% include "lang-menu.njk" %}
       {% if pageType != 'home' %}<a class="brand-link" href="{{ site.homePaths[language] }}">{{ site.name }}</a>{% endif %}
@@ -51,6 +55,10 @@
     <div class="brand">
       <h1><a href="{{ site.homePaths[language] }}">{{ site.name }}</a></h1>
       <p class="subtitle">{{ copy.subtitle }}</p>
+    </div>
+    {% elif pageType == 'history' %}
+    <div class="header-row">
+      <h1>{{ history.copy[language].heading }}</h1>
     </div>
     {% else %}
     <div class="header-row">
@@ -63,6 +71,7 @@
   <footer class="container footer">
     <nav class="footer-links" aria-label="{{ copy.footerLabel }}">
       <a href="{{ site.homePaths[language] }}">{{ copy.homeLink }}</a>
+      <a href="{{ history.paths[language] }}"{% if pageType == 'history' %} aria-current="page"{% endif %}>{{ history.copy[language].heading }}</a>
       <a href="https://x.com/PDF_Studio" target="_blank" rel="noopener noreferrer">{{ copy.xChannel }}</a>
     </nav>
     <p>© 2026 {{ site.name }}</p>

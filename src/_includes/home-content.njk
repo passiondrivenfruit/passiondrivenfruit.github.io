@@ -5,6 +5,7 @@
     {% for paragraph in copy.about %}
     <p>{{ paragraph }}</p>
     {% endfor %}
+    <p class="history-link"><a href="{{ history.paths[language] }}">{{ history.copy[language].link }}</a></p>
   </section>
 
   <section aria-labelledby="games-heading" class="games">
