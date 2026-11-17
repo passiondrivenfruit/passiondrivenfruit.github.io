@@ -11,7 +11,8 @@ const legalDocs = requireCjs(path.resolve("src/_data/legalDocs.js"));
 const history = requireCjs(path.resolve("src/_data/history.js"));
 const legalRoot = path.resolve("legal-src");
 const library = Object.fromEntries(readdirSync(path.join(legalRoot, "library")).map((f) => [path.basename(f, ".js"), requireCjs(path.join(legalRoot, "library", f))]));
-const games = readdirSync(path.join(legalRoot, "games")).map((f) => requireCjs(path.join(legalRoot, "games", f)));
+const allGames = readdirSync(path.join(legalRoot, "games")).map((f) => requireCjs(path.join(legalRoot, "games", f)));
+const games = allGames.filter((g) => g.documents !== false); // games whose documents are built from the library
 
 const problems = [];
 const check = (condition, message) => { if (!condition) problems.push(message); };
@@ -66,7 +67,7 @@ const expectedKoreanAbout = [
   "간단한 파일럿 프로그램인 지뢰찾기를 시작으로, 현재는 여러 명의 동료들과 함께 개발을 진행하고 있습니다.",
   "내년 중으로 새로운 게임을 론칭할 예정에 있으니 많은 관심 부탁드립니다."
 ];
-const cardGames = games.filter((g) => g.card);
+const cardGames = allGames.filter((g) => g.card);
 for (const loc of site.locales) {
   const href = site.homePaths[loc.code];
   const rel = relOf(href);
@@ -86,10 +87,12 @@ for (const loc of site.locales) {
   for (const [i, card] of cards.entries()) {
     const game = legalDocs.cards(loc.code)[i];
     check(card.includes(`<h3>${escape(game.name)}</h3>`) && /class="card-attr/.test(card) && /class="card-art"/.test(card) && card.includes(escape(game.text)), `${rel}: card ${game.id} is missing its name, store, art or text`);
-    check(card.includes(`href="${game.privacy}"`) && card.includes(`href="${game.terms}"`), `${rel}: card ${game.id} must link both documents`);
+    if (game.privacy) check(card.includes(`href="${game.privacy}"`) && card.includes(`href="${game.terms}"`), `${rel}: card ${game.id} must link both documents`);
+    else check(!card.includes('class="card-stats"'), `${rel}: card ${game.id} has no documents, so it must not show document links`);
+    if (game.status === "coming" && game.release) check(card.includes(`<span class="soon">${escape(game.release)}</span>`), `${rel}: card ${game.id} must show its release window`);
     for (const store of game.stores) check(game.status !== "available" || card.includes(`href="${store.url}"`), `${rel}: card ${game.id} must link its store`);
     const shots = card.match(/data-shots="([^"]*)"/)?.[1].split(",").filter(Boolean) ?? [];
-    check(shots.length > 0, `${rel}: card ${game.id} has no screenshots`);
+    check(shots.length === game.screenshots.length && (shots.length > 0) === /role="button"/.test(card), `${rel}: card ${game.id} must open a gallery exactly when it has screenshots`);
     for (const shot of shots) check(await exists(path.join(root, shot.slice(1))), `${rel}: missing screenshot ${shot}`);
   }
   check(html.includes(`<p class="history-link"><a href="${history.paths[loc.code]}">`), `${rel}: home must link the history page`);
@@ -190,7 +193,7 @@ for (const game of games) {
   }
 }
 
-const expectedStatic = ["favicon.ico", "assets/ico/favicon-32.png", "assets/ico/favicon-192.png", "assets/ico/apple-touch-icon.png", "site.js", "style.css", "assets/ico/minesweeku.webp", "assets/ico/minesweeper.webp", "assets/ico/android.webp", "CNAME", "app-ads.txt", "google77a4653943ed2177.html", "robots.txt", "sitemap.xml", "assets/header/minesweeper.jpg", "assets/ico/minesweeper.png", "assets/ico/minesweeku.png", "assets/ico/android.png"];
+const expectedStatic = ["favicon.ico", "assets/ico/favicon-32.png", "assets/ico/favicon-192.png", "assets/ico/apple-touch-icon.png", "site.js", "style.css", "assets/ico/minesweeku.webp", "assets/ico/minesweeper.webp", "assets/ico/pinfinity-pinferno.webp", "assets/ico/android.webp", "CNAME", "app-ads.txt", "google77a4653943ed2177.html", "robots.txt", "sitemap.xml", "assets/header/minesweeper.jpg", "assets/ico/minesweeper.png", "assets/ico/minesweeku.png", "assets/ico/android.png"];
 for (const file of expectedStatic) check(await exists(path.join(root, file)), `Missing public file: ${file}`);
 check((await read("CNAME")).trim() === "pdf-studio.co.kr", "CNAME does not point to pdf-studio.co.kr");
 const robots = await read("robots.txt");

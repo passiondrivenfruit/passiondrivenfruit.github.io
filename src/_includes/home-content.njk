@@ -18,8 +18,8 @@
         <li class="card-slot">
           <article class="game-card{% if card.status == 'coming' %} is-coming{% endif %}" style="--frame: {{ card.frame }}"
             data-game="{{ card.id }}" data-title="{{ copy.screenshots | replace('%s', card.name) }}"
-            data-shots="{{ card.screenshots | join(',') }}" tabindex="0" role="button" aria-haspopup="dialog"
-            aria-label="{{ copy.screenshots | replace('%s', card.name) }}">
+            data-shots="{{ card.screenshots | join(',') }}"{% if card.screenshots.length %} tabindex="0" role="button" aria-haspopup="dialog"
+            aria-label="{{ copy.screenshots | replace('%s', card.name) }}"{% endif %}>
             <header class="card-name">
               <h3>{{ card.name }}</h3>
               <span class="card-attrs">
@@ -37,18 +37,20 @@
                 {% endfor %}
               </span>
             </header>
-            <div class="card-status">{% if card.status == 'coming' %}<span class="soon">{{ copy.comingSoon }}</span>{% else %}{% for store in card.stores %}<span>{{ site.storeNames[store.id] }}</span>{% endfor %}{% endif %}</div>
+            <div class="card-status">{% if card.status == 'coming' %}<span class="soon">{{ card.release or copy.comingSoon }}</span>{% else %}{% for store in card.stores %}<span>{{ site.storeNames[store.id] }}</span>{% endfor %}{% endif %}</div>
             <div class="card-art">
               <img src="{{ card.icon }}" alt="" width="192" height="192" loading="lazy" decoding="async"{% if card.pixelated %} class="pixelated"{% endif %}>
             </div>
             <div class="card-text">
               <p class="card-type">[{{ card.genre }}]</p>
               <p class="card-desc">{{ card.text }}</p>
+              {% if card.privacy %}
               <p class="card-stats">
                 <a href="{{ card.privacy }}">{{ copy.privacy }}</a>
                 <span aria-hidden="true">/</span>
                 <a href="{{ card.terms }}">{{ copy.terms }}</a>
               </p>
+              {% endif %}
             </div>
           </article>
         </li>

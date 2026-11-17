@@ -97,6 +97,7 @@ ul { padding-left: 1.4rem; }
 }
 .game-card:hover, .game-card:focus-visible { transform: scale(1.04); box-shadow: 0 16px 34px rgba(25, 33, 43, 0.3), inset 0 0 0 2px rgba(255, 255, 255, 0.3); }
 .game-card:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.game-card:not([role]) { cursor: default; }
 .card-name {
   display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; padding: 0.3rem 0.35rem 0.3rem 0.55rem;
   border: 2px solid var(--ink); border-radius: 0.3rem; background: linear-gradient(#fbf4e1, #e7d8b3);
