@@ -10,8 +10,10 @@ const DOCS = ["terms", "privacy"];
 const library = Object.fromEntries(fs.readdirSync(path.join(root, "library")).filter((f) => f.endsWith(".js"))
   .map((f) => [path.basename(f, ".js"), require(path.join(root, "library", f))]));
 const studio = require(path.join(root, "studio.js"));
-const games = fs.readdirSync(path.join(root, "games")).filter((f) => f.endsWith(".js"))
+const allGames = fs.readdirSync(path.join(root, "games")).filter((f) => f.endsWith(".js"))
   .map((f) => require(path.join(root, "games", f))).sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
+// A game with `documents: false` has a home card only; its terms and privacy are not built here yet.
+const games = allGames.filter((g) => g.documents !== false);
 
 const pagePath = (lang, game, doc) => `/${lang}/legal/${game}/${doc}.html`;
 
@@ -68,7 +70,7 @@ const pick = (map, lang) => map?.[lang] ?? map?.default ?? map?.en;
 
 // Home page cards, in display order, for one site language.
 function cards(lang) {
-  return games.filter((g) => g.card).map((g) => ({
+  return allGames.filter((g) => g.card).map((g) => ({
     id: g.id,
     name: pick(g.name, lang) ?? g.name.default,
     frame: g.card.frame,
@@ -79,8 +81,9 @@ function cards(lang) {
     genre: pick(g.card.genre, lang),
     text: pick(g.card.text, lang),
     screenshots: pick(g.card.screenshots, lang) ?? [],
-    privacy: link(g.id, "privacy", lang),
-    terms: link(g.id, "terms", lang)
+    release: pick(g.card.release, lang) ?? null,
+    privacy: g.documents === false ? null : link(g.id, "privacy", lang),
+    terms: g.documents === false ? null : link(g.id, "terms", lang)
   }));
 }
 
