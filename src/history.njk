@@ -1,0 +1,36 @@
+---
+pagination:
+  data: site.locales
+  size: 1
+  alias: locale
+permalink: "{{ history.paths[locale.code] | replace('/', '', 1) }}"
+layout: layouts/base.njk
+pageType: history
+eleventyComputed:
+  language: "{{ locale.code }}"
+  canonicalPath: "{{ history.paths[locale.code] }}"
+---
+{% set h = history.copy[language] %}
+<main id="main-content" class="container">
+  <p class="history-intro">{{ h.intro }}</p>
+  {% for group in history.years(language) %}
+  <section class="history-year" aria-labelledby="year-{{ group.year }}">
+    <h2 id="year-{{ group.year }}">{{ group.label }}</h2>
+    <ol class="timeline">
+      {% for event in group.events %}
+      <li class="timeline-item is-{{ event.kind }}"{% if event.frame %} style="--frame: {{ event.frame }}"{% endif %}>
+        <time class="timeline-date" datetime="{{ event.date }}">{{ event.month }}</time>
+        <div class="timeline-body">
+          {% if event.icon %}<img class="timeline-icon" src="{{ event.icon }}" alt="" width="56" height="56" loading="lazy" decoding="async">{% endif %}
+          <div>
+            <span class="timeline-kind">{{ event.kindLabel }}</span>
+            <h3>{{ event.title }}</h3>
+            {% if event.text %}<p>{{ event.text }}</p>{% endif %}
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+  {% endfor %}
+</main>

@@ -10,6 +10,11 @@ eleventyExcludeFromCollections: true
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
+{% endfor %}{% for l in site.locales %}  <url>
+    <loc>{{ site.origin }}{{ history.paths[l.code] }}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 {% endfor %}{% for p in legalDocs.pages %}{% if not p.draft and not p.alias %}  <url>
     <loc>{{ p.url }}</loc>
     <changefreq>yearly</changefreq>
