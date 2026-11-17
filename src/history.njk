@@ -11,7 +11,7 @@ eleventyComputed:
   canonicalPath: "{{ history.paths[locale.code] }}"
 ---
 {% set h = history.copy[language] %}
-<main id="main-content" class="container">
+<main id="main-content" class="container history-page">
   <p class="history-intro">{{ h.intro }}</p>
   {% for group in history.years(language) %}
   <section class="history-year" aria-labelledby="year-{{ group.year }}">

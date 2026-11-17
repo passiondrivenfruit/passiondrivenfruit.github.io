@@ -137,7 +137,8 @@ a.card-attr:hover { background: radial-gradient(circle at 35% 30%, #fff, #b9d79a
 .history-link { margin-top: 1rem; font-weight: 600; }
 .history-link a::after { content: " →"; }
 [dir="rtl"] .history-link a::after { content: " ←"; }
-.history-intro { color: var(--muted); }
+.history-page { padding-top: 0; }
+.history-page .history-intro { margin-top: 0; color: var(--muted); }
 .timeline { position: relative; margin: 0; padding: 0 0 0.5rem; list-style: none; }
 .timeline::before { content: ""; position: absolute; inset-block: 0.4rem 0; inset-inline-start: 0.45rem; width: 2px; background: var(--border); }
 .timeline-item { position: relative; padding: 0.15rem 0 1.4rem; padding-inline-start: 2rem; }
