@@ -142,7 +142,7 @@ const studioDrafts = [
   "ko/legal/terms.html", "ko/legal/privacy.html", "ko/legal/pinballatro-consent.html", "ko/legal/pinfinity-pinferno-consent.html",
   "ko/legal/draft-1/terms.html", "ko/legal/draft-1/privacy.html", "ko/legal/draft-1/pinballatro-consent.html",
   "ko/legal/draft-2/terms.html", "ko/legal/draft-2/privacy.html", "ko/legal/draft-2/pinfinity-pinferno-consent.html",
-  "ko/legal/draft-3/terms.html"
+  "ko/legal/draft-3/terms.html", "ko/legal/draft-3/privacy.html", "ko/legal/draft-3/pinfinity-pinferno-consent.html", "ko/legal/draft-3/support.html"
 ];
 const draftCanonical = (rel) => {
   if (/\/draft-[123]\//.test(rel)) return `/${rel}`;
