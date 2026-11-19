@@ -76,6 +76,7 @@ module.exports = {
     adsChoice: true,      // in-game personalized-ads choice (terms screen, Documents menu)
     inGameConsent: true,  // players accept the terms in the game; changes ask again
     legalDownload: true,  // the game downloads these documents (needs the internet)
+    adsDataConsent: true, // ad SDK starts only after the optional consent (game #184)
     saveTransfer: true    // Android backup, file export/import and data reset (game #175)
   }
 };
