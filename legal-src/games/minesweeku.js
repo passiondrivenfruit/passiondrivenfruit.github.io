@@ -7,8 +7,8 @@
 module.exports = {
   id: "minesweeku",
   order: 2,
-  version: 3,
-  effective: "2026-11-17",
+  version: 4,
+  effective: "2026-11-26",
   draft: false,
   // The game's own UI languages; every one gets both documents. Korean is the original.
   languages: ["ko", "en", "zh", "ja", "vi", "fr", "es", "de", "it", "pt", "ar"],
@@ -76,6 +76,7 @@ module.exports = {
     adsChoice: true,      // in-game personalized-ads choice (terms screen, Documents menu)
     inGameConsent: true,  // players accept the terms in the game; changes ask again
     legalDownload: true,  // the game downloads these documents (needs the internet)
-    noBackup: true        // export_presets: user_data_backup/allow=false — progress cannot move to another device
+    adsDataConsent: true, // ad SDK starts only after the optional consent (game #184)
+    saveTransfer: true    // Android backup, file export/import and data reset (game #175)
   }
 };
