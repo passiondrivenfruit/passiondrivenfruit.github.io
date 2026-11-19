@@ -6,7 +6,7 @@ const MONTHS = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "A
 module.exports = {
   // Written for games like Minesweeku only: other combinations of the flags below need the
   // alternative sentences added first (see ko/en/ja/zh), and the build refuses them until then.
-  only: { banner: false, ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: true },
+  only: { banner: false, ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: false, saveTransfer: true },
   ui: {
     languageName: "Deutsch",
     termsTitle: (n) => `${n} – Nutzungsbedingungen`,
@@ -30,9 +30,9 @@ module.exports = {
       !g.account && "Eine Registrierung oder Anmeldung ist nicht erforderlich.",
       g.offline && "Zum Spielen ist keine Internetverbindung nötig. Für Werbung, die Werbeeinwilligung und das Abrufen der neuesten Fassung dieser Dokumente ist sie erforderlich."),
     (g) => g.localOnly && S("Spieldaten",
-      `Spieldaten wie Fortschritt${g.nickname ? ", Spitzname" : ""}, Rekorde${g.currency ? ", Spielwährungen" : ""} und Einstellungen werden nur auf dem Gerät des Spielers gespeichert und nicht an Server des Studios gesendet.`,
+      `Spieldaten wie Fortschritt${g.nickname ? ", Spitzname" : ""}, Rekorde${g.currency ? ", Spielwährungen" : ""} und Einstellungen werden auf dem Gerät des Spielers gespeichert und nicht an Server des Studios gesendet.`,
       "Wird die App gelöscht oder werden ihre Daten gelöscht, gehen auch die Spieldaten verloren; das Studio kann sie nicht wiederherstellen.",
-      g.noBackup && "Das Spiel unterstützt weder Gerätesicherungen noch die Übertragung auf ein anderes Gerät; beim Gerätewechsel oder bei einer Neuinstallation kann der Fortschritt nicht übernommen werden."),
+      g.saveTransfer && "Ist die Google-Sicherung auf dem Gerät aktiviert, können Spieldaten im Google-Konto des Spielers gesichert und auf einem neuen Gerät wiederhergestellt werden. Unter „Daten“ in den Einstellungen der Startseite kann der Spieler sie in eine Datei exportieren und importieren; für exportierte Dateien ist er selbst verantwortlich. Dort können Spieldaten auch zurückgesetzt werden; das Studio kann zurückgesetzte Daten nicht wiederherstellen."),
     (g) => g.currency && S("Spielwährungen",
       `${g.currencies} (die „Spielwährungen“) füllen sich mit der Zeit wieder auf oder werden kostenlos als Belohnung für Aktivitäten im Spiel vergeben, etwa für das Ansehen von Werbung mit Belohnung.`,
       "Spielwährungen haben keinen Geldwert und können weder in Geld oder andere Güter umgetauscht noch erstattet oder an andere übertragen werden.",
@@ -70,7 +70,7 @@ module.exports = {
       "Das Studio hält das koreanische Gesetz zum Schutz personenbezogener Daten sowie das Recht des Wohnsitzlandes jedes Spielers ein, etwa die Datenschutz-Grundverordnung (DSGVO) der EU und des Vereinigten Königreichs, die Datenschutzgesetze der US-Bundesstaaten, das brasilianische LGPD, das japanische Gesetz zum Schutz personenbezogener Daten und die vietnamesische Datenschutzverordnung."),
     (g) => g.localOnly && S("Vom Studio selbst verarbeitete Daten",
       "Das Studio erhebt keine personenbezogenen Daten wie Namen, Kontaktdaten oder Konten und betreibt keinen Server, der personenbezogene Daten speichert.",
-      `Spielfortschritt${g.nickname ? ", Spitzname" : ""}, Rekorde, Einstellungen sowie die Entscheidungen des Spielers zu den Bedingungen und zur Werbung werden nur auf dem Gerät gespeichert und nicht an das Studio gesendet.`,
+      `Spielfortschritt${g.nickname ? ", Spitzname" : ""}, Rekorde, Einstellungen sowie die Entscheidungen des Spielers zu den Bedingungen und zur Werbung werden auf dem Gerät gespeichert und nicht an das Studio gesendet.`,
       "Schreibt ein Spieler dem Studio eine E-Mail, werden Adresse und Nachricht zur Beantwortung verarbeitet und innerhalb eines Jahres nach der Antwort gelöscht."),
     (g) => g.ads && S("Verarbeitung über das Werbe-SDK",
       "Das Spiel nutzt Google AdMob von Google LLC zur Anzeige von Werbung und Googles User Messaging Platform (UMP) zur Einholung der Werbeeinwilligung. Die im Spiel enthaltenen SDKs erheben automatisch folgende Daten und senden sie an Google:",
@@ -121,9 +121,10 @@ module.exports = {
       g.vibrate && "• Vibration: haptisches Feedback bei der Bedienung"),
     (g) => g.localOnly && S("Speicherdauer und Löschung",
       "Auf dem Gerät gespeicherte Daten werden sofort gelöscht, wenn der Spieler die App oder ihre Daten löscht. Das Studio bewahrt keine Kopie der Spieldaten auf.",
+      g.saveTransfer && "Ist die Google-Sicherung auf dem Gerät aktiviert, können Spieldaten (Fortschritt, Spitzname, Rekorde, Währungen, Einstellungen sowie Entscheidungen zu den Bedingungen und zur Werbung) verschlüsselt im Google-Konto des Spielers gesichert werden. Google verwaltet diese Sicherung, das Studio kann sie nicht lesen; sie lässt sich in den Sicherungseinstellungen des Geräts abschalten. Exportierte Dateien werden am vom Spieler gewählten Ort gespeichert und nicht an das Studio gesendet. Beim Zurücksetzen werden die Daten auf dem Gerät gelöscht; eine vorhandene Google-Sicherung wird bei der nächsten Sicherung ersetzt.",
       "Anfrage-E-Mails werden innerhalb eines Jahres nach der Antwort endgültig aus dem Postfach gelöscht."),
     (g) => S("Sicherheitsmaßnahmen",
-      "Das Studio betreibt keinen Server, der personenbezogene Daten speichert, und speichert Spieldaten nur auf dem Gerät des Spielers.",
+      "Das Studio betreibt keinen Server, der personenbezogene Daten speichert, und speichert Spieldaten auf dem Gerät des Spielers.",
       "Die Kommunikation des Spiels und des Werbe-SDK ist verschlüsselt (HTTPS), und die App fordert nur die für ihre Funktionen nötigen Berechtigungen an. Anfrage-E-Mails liest nur der Betreiber."),
     (g) => S("Kinder",
       "Das Spiel richtet sich nicht an Kinder unter 14 Jahren. Kinder unter 14 Jahren (je nach Land unter 13 bis 16 Jahren) sollten es mit Zustimmung ihres gesetzlichen Vertreters nutzen; das Studio erhebt keine personenbezogenen Daten direkt von Kindern.",

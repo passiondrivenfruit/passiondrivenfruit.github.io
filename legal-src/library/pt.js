@@ -6,7 +6,7 @@ const MONTHS = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "jul
 module.exports = {
   // Written for games like Minesweeku only: other combinations of the flags below need the
   // alternative sentences added first (see ko/en/ja/zh), and the build refuses them until then.
-  only: { banner: false, ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: true },
+  only: { banner: false, ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: false, saveTransfer: true },
   ui: {
     languageName: "Português",
     termsTitle: (n) => `Termos de uso de ${n}`,
@@ -30,9 +30,9 @@ module.exports = {
       !g.account && "Não é preciso cadastro nem login.",
       g.offline && "Jogar não exige conexão com a internet. Assistir a anúncios, o processo de consentimento de anúncios e a consulta da versão mais recente destes documentos exigem."),
     (g) => g.localOnly && S("Dados do jogo",
-      `Dados do jogo como progresso${g.nickname ? ", apelido" : ""}, recordes${g.currency ? ", moedas do jogo" : ""} e configurações ficam salvos apenas no dispositivo do jogador e não são enviados aos servidores do Estúdio.`,
+      `Dados do jogo como progresso${g.nickname ? ", apelido" : ""}, recordes${g.currency ? ", moedas do jogo" : ""} e configurações ficam salvos no dispositivo do jogador e não são enviados aos servidores do Estúdio.`,
       "Ao excluir o app ou apagar seus dados, os dados do jogo também são apagados, e o Estúdio não pode recuperá-los.",
-      g.noBackup && "O Jogo não oferece backup do dispositivo nem transferência para outro aparelho, então o progresso não pode ser levado ao trocar de aparelho ou reinstalar o app."),
+      g.saveTransfer && "Se o backup do Google estiver ativado no dispositivo, os dados do jogo podem ser salvos na Conta do Google do jogador e restaurados em um novo dispositivo. Em \"Dados\", nas configurações da tela inicial, o jogador pode exportá-los para um arquivo e importá-los; os arquivos exportados ficam sob responsabilidade dele. Ali também é possível redefinir os dados do jogo, que o Estúdio não consegue recuperar depois."),
     (g) => g.currency && S("Moedas do jogo",
       `Os ${g.currencies} (as "moedas do jogo") se recarregam com o tempo ou são concedidos gratuitamente como recompensa por atividades no Jogo, como assistir a anúncios premiados.`,
       "As moedas do jogo não têm valor em dinheiro e não podem ser trocadas por dinheiro ou outros bens, reembolsadas ou transferidas a outras pessoas.",
@@ -70,7 +70,7 @@ module.exports = {
       "O Estúdio cumpre a Lei de Proteção de Informações Pessoais da República da Coreia e as leis do país de residência de cada jogador, como o Regulamento Geral sobre a Proteção de Dados (GDPR) da UE e do Reino Unido, as leis de privacidade dos estados dos EUA, a Lei Geral de Proteção de Dados (LGPD) do Brasil, a lei japonesa de proteção de informações pessoais e o decreto vietnamita de proteção de dados pessoais."),
     (g) => g.localOnly && S("Informações tratadas diretamente pelo Estúdio",
       "O Estúdio não coleta diretamente informações pessoais como nome, contato ou conta e não opera servidores que armazenem informações pessoais.",
-      `Progresso${g.nickname ? ", apelido" : ""}, recordes, configurações e as escolhas do jogador sobre os termos e os anúncios ficam salvos apenas no dispositivo e não são enviados ao Estúdio.`,
+      `Progresso${g.nickname ? ", apelido" : ""}, recordes, configurações e as escolhas do jogador sobre os termos e os anúncios ficam salvos no dispositivo e não são enviados ao Estúdio.`,
       "Se o jogador entrar em contato por e-mail, o endereço e a mensagem são tratados para responder e excluídos em até um ano após a resposta."),
     (g) => g.ads && S("Informações tratadas pelo SDK de anúncios",
       "O Jogo usa o Google AdMob, da Google LLC, para exibir anúncios e a Plataforma de Mensagens ao Usuário (UMP) do Google para pedir o consentimento de anúncios. Os SDKs incluídos no Jogo coletam automaticamente as seguintes informações e as enviam ao Google:",
@@ -121,9 +121,10 @@ module.exports = {
       g.vibrate && "• Vibração: resposta tátil aos controles"),
     (g) => g.localOnly && S("Armazenamento e exclusão",
       "As informações salvas no dispositivo são apagadas assim que o jogador exclui o app ou seus dados. O Estúdio não guarda cópias das informações do jogo.",
+      g.saveTransfer && "Se o backup do Google estiver ativado no dispositivo, os dados do jogo (progresso, apelido, recordes, moedas, configurações e escolhas sobre os termos e os anúncios) podem ser salvos de forma criptografada na Conta do Google do jogador. O Google administra esse backup e o Estúdio não pode lê-lo; ele pode ser desativado nas configurações de backup do dispositivo. Os arquivos exportados ficam onde o jogador escolher e não são enviados ao Estúdio. Redefinir os dados os apaga do dispositivo; um backup do Google existente é substituído no backup seguinte.",
       "Os e-mails de contato são excluídos definitivamente da caixa de entrada em até um ano após a resposta."),
     (g) => S("Medidas de segurança",
-      "O Estúdio não opera servidores que armazenem informações pessoais e guarda as informações do jogo apenas no dispositivo do jogador.",
+      "O Estúdio não opera servidores que armazenem informações pessoais e guarda as informações do jogo no dispositivo do jogador.",
       "As comunicações do Jogo e do SDK de anúncios são criptografadas (HTTPS), e o app só pede as permissões necessárias às suas funções. Os e-mails de contato são lidos apenas pelo responsável pelo serviço."),
     (g) => S("Crianças",
       "O Jogo não se destina a menores de 14 anos. Menores de 14 anos (de 13 a 16, conforme o país) devem usá-lo com o consentimento do responsável legal, e o Estúdio não coleta diretamente informações pessoais de crianças.",

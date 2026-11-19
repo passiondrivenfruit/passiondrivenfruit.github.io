@@ -6,7 +6,7 @@ const MONTHS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet"
 module.exports = {
   // Written for games like Minesweeku only: other combinations of the flags below need the
   // alternative sentences added first (see ko/en/ja/zh), and the build refuses them until then.
-  only: { banner: false, ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: true },
+  only: { banner: false, ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: false, saveTransfer: true },
   ui: {
     languageName: "Français",
     termsTitle: (n) => `Conditions d'utilisation de ${n}`,
@@ -30,9 +30,9 @@ module.exports = {
       !g.account && "Aucune inscription ni connexion n'est nécessaire.",
       g.offline && "Jouer ne nécessite pas de connexion Internet. Le visionnage de publicités, le recueil du consentement publicitaire et la consultation de la dernière version de ces documents en nécessitent une."),
     (g) => g.localOnly && S("Données de jeu",
-      `Les données de jeu telles que la progression${g.nickname ? ", le pseudo" : ""}, les records${g.currency ? ", les monnaies du jeu" : ""} et les réglages sont enregistrées uniquement sur l'appareil du joueur et ne sont pas envoyées aux serveurs du Studio.`,
+      `Les données de jeu telles que la progression${g.nickname ? ", le pseudo" : ""}, les records${g.currency ? ", les monnaies du jeu" : ""} et les réglages sont enregistrées sur l'appareil du joueur et ne sont pas envoyées aux serveurs du Studio.`,
       "La suppression de l'application ou de ses données supprime les données de jeu, que le Studio ne peut pas restaurer.",
-      g.noBackup && "Le Jeu ne prend en charge ni la sauvegarde de l'appareil ni le transfert vers un autre appareil : la progression ne peut pas être transférée en cas de changement d'appareil ou de réinstallation."),
+      g.saveTransfer && "Si la sauvegarde Google est activée sur l'appareil, les données de jeu peuvent être sauvegardées sur le compte Google du joueur et restaurées sur un nouvel appareil. Dans « Données » des réglages de l'accueil, le joueur peut les exporter dans un fichier et les importer ; il gère lui-même les fichiers exportés. Il peut aussi y réinitialiser les données de jeu, que le Studio ne peut pas récupérer ensuite."),
     (g) => g.currency && S("Monnaies du jeu",
       `Les ${g.currencies} (les « monnaies du jeu ») se rechargent avec le temps ou sont offerts gratuitement en récompense d'activités dans le Jeu, comme le visionnage de publicités avec récompense.`,
       "Les monnaies du jeu n'ont aucune valeur monétaire et ne peuvent être ni échangées contre de l'argent ou d'autres biens, ni remboursées, ni cédées à autrui.",
@@ -70,7 +70,7 @@ module.exports = {
       "Le Studio respecte la loi coréenne sur la protection des informations personnelles ainsi que la législation du pays de résidence de chaque joueur, notamment le Règlement général sur la protection des données (RGPD) de l'UE et du Royaume-Uni, les lois des États américains sur la vie privée, la LGPD brésilienne, la loi japonaise sur la protection des informations personnelles et le décret vietnamien sur la protection des données personnelles."),
     (g) => g.localOnly && S("Informations traitées directement par le Studio",
       "Le Studio ne collecte directement aucune information personnelle telle que le nom, les coordonnées ou un compte, et n'exploite aucun serveur stockant des informations personnelles.",
-      `La progression${g.nickname ? ", le pseudo" : ""}, les records, les réglages et les choix du joueur concernant les conditions et la publicité sont enregistrés uniquement sur l'appareil et ne sont pas envoyés au Studio.`,
+      `La progression${g.nickname ? ", le pseudo" : ""}, les records, les réglages et les choix du joueur concernant les conditions et la publicité sont enregistrés sur l'appareil et ne sont pas envoyés au Studio.`,
       "Si un joueur contacte le Studio par e-mail, l'adresse et le message sont traités pour répondre, puis supprimés dans l'année qui suit la réponse."),
     (g) => g.ads && S("Informations traitées via le SDK publicitaire",
       "Le Jeu utilise Google AdMob, de Google LLC, pour afficher des publicités, et la plateforme de messages aux utilisateurs (UMP) de Google pour recueillir le consentement publicitaire. Les SDK intégrés au Jeu collectent automatiquement les informations suivantes et les envoient à Google :",
@@ -121,9 +121,10 @@ module.exports = {
       g.vibrate && "• Vibration : retour haptique des commandes"),
     (g) => g.localOnly && S("Conservation et suppression",
       "Les informations enregistrées sur l'appareil sont supprimées dès que le joueur supprime l'application ou ses données. Le Studio ne conserve aucune copie des informations de jeu.",
+      g.saveTransfer && "Si la sauvegarde Google est activée sur l'appareil, les données de jeu (progression, pseudo, records, monnaies, réglages et choix concernant les conditions et la publicité) peuvent être sauvegardées sous forme chiffrée sur le compte Google du joueur. Google gère cette sauvegarde et le Studio ne peut pas la lire ; elle peut être désactivée dans les réglages de sauvegarde de l'appareil. Les fichiers exportés sont enregistrés à l'endroit choisi par le joueur et ne sont pas envoyés au Studio. La réinitialisation efface les données de l'appareil ; une sauvegarde Google existante est remplacée lors de la sauvegarde suivante.",
       "Les e-mails de contact sont définitivement supprimés de la messagerie dans l'année qui suit la réponse."),
     (g) => S("Mesures de sécurité",
-      "Le Studio n'exploite aucun serveur stockant des informations personnelles et conserve les informations de jeu uniquement sur l'appareil du joueur.",
+      "Le Studio n'exploite aucun serveur stockant des informations personnelles et conserve les informations de jeu sur l'appareil du joueur.",
       "Les communications du Jeu et du SDK publicitaire sont chiffrées (HTTPS), et l'application ne demande que les autorisations nécessaires à ses fonctions. Les e-mails de contact ne sont lus que par l'exploitant."),
     (g) => S("Enfants",
       "Le Jeu ne s'adresse pas aux enfants de moins de 14 ans. Les enfants de moins de 14 ans (de moins de 13 à 16 ans selon le pays) doivent l'utiliser avec l'accord de leur représentant légal, et le Studio ne collecte pas directement d'informations personnelles d'enfants.",

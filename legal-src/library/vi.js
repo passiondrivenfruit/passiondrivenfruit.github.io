@@ -5,7 +5,7 @@ const GOOGLE = "Chính sách quyền riêng tư của Google: https://policies.g
 module.exports = {
   // Written for games like Minesweeku only: other combinations of the flags below need the
   // alternative sentences added first (see ko/en/ja/zh), and the build refuses them until then.
-  only: { banner: false, ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: true },
+  only: { banner: false, ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: false, saveTransfer: true },
   ui: {
     languageName: "Tiếng Việt",
     termsTitle: (n) => `Điều khoản dịch vụ ${n}`,
@@ -29,9 +29,9 @@ module.exports = {
       !g.account && "Không cần đăng ký hay đăng nhập.",
       g.offline && "Chơi không cần kết nối Internet. Xem quảng cáo, thủ tục đồng ý quảng cáo và kiểm tra phiên bản mới nhất của tài liệu này cần kết nối Internet."),
     (g) => g.localOnly && S("Dữ liệu trò chơi",
-      `Dữ liệu trò chơi như tiến trình${g.nickname ? ", biệt danh" : ""}, thành tích${g.currency ? ", tiền tệ trong trò chơi" : ""} và cài đặt chỉ được lưu trên thiết bị của người chơi và không được gửi đến máy chủ của Studio.`,
+      `Dữ liệu trò chơi như tiến trình${g.nickname ? ", biệt danh" : ""}, thành tích${g.currency ? ", tiền tệ trong trò chơi" : ""} và cài đặt được lưu trên thiết bị của người chơi và không được gửi đến máy chủ của Studio.`,
       "Khi xóa ứng dụng hoặc xóa dữ liệu ứng dụng, dữ liệu trò chơi cũng bị xóa và Studio không thể khôi phục.",
-      g.noBackup && "Trò chơi không hỗ trợ sao lưu thiết bị hay chuyển sang thiết bị khác, nên khi đổi thiết bị hoặc cài lại ứng dụng thì không thể chuyển tiến trình."),
+      g.saveTransfer && "Nếu thiết bị bật sao lưu Google, dữ liệu trò chơi có thể được sao lưu vào Tài khoản Google của người chơi và khôi phục trên thiết bị mới. Trong \"Quản lý dữ liệu\" ở phần cài đặt trang chủ, người chơi có thể xuất ra tệp và nhập lại; người chơi tự quản lý tệp đã xuất. Tại đó cũng có thể đặt lại dữ liệu trò chơi, và Studio không thể khôi phục dữ liệu đã đặt lại."),
     (g) => g.currency && S("Tiền tệ trong trò chơi",
       `${g.currencies[0].toUpperCase() + g.currencies.slice(1)} (sau đây gọi là "tiền tệ trong trò chơi") được hồi lại theo thời gian hoặc được tặng miễn phí làm phần thưởng cho các hoạt động trong trò chơi như xem quảng cáo có thưởng.`,
       "Tiền tệ trong trò chơi không có giá trị tiền mặt và không thể đổi thành tiền hay tài sản khác, hoàn tiền hoặc chuyển cho người khác.",
@@ -69,7 +69,7 @@ module.exports = {
       "Studio tuân thủ Luật Bảo vệ thông tin cá nhân của Đại Hàn Dân Quốc và pháp luật của quốc gia nơi người chơi cư trú, như Quy định chung về bảo vệ dữ liệu (GDPR) của EU và Vương quốc Anh, luật quyền riêng tư của các bang Hoa Kỳ, LGPD của Brazil, Luật Bảo vệ thông tin cá nhân của Nhật Bản và Nghị định về bảo vệ dữ liệu cá nhân của Việt Nam."),
     (g) => g.localOnly && S("Thông tin Studio trực tiếp xử lý",
       "Studio không trực tiếp thu thập thông tin cá nhân như họ tên, thông tin liên lạc hay tài khoản, và không vận hành máy chủ lưu trữ thông tin cá nhân.",
-      `Tiến trình trò chơi${g.nickname ? ", biệt danh" : ""}, thành tích, cài đặt và các lựa chọn của người chơi về điều khoản và quảng cáo chỉ được lưu trên thiết bị và không được gửi đến Studio.`,
+      `Tiến trình trò chơi${g.nickname ? ", biệt danh" : ""}, thành tích, cài đặt và các lựa chọn của người chơi về điều khoản và quảng cáo được lưu trên thiết bị và không được gửi đến Studio.`,
       "Khi người chơi liên hệ qua email, địa chỉ email và nội dung được xử lý để trả lời và sẽ bị xóa trong vòng một năm sau khi trả lời."),
     (g) => g.ads && S("Thông tin được xử lý qua SDK quảng cáo",
       "Trò chơi dùng Google AdMob của Google LLC để hiển thị quảng cáo và Nền tảng nhắn tin người dùng (UMP) của Google để xin đồng ý về quảng cáo. Các SDK trong Trò chơi tự động thu thập và gửi cho Google các thông tin sau:",
@@ -120,9 +120,10 @@ module.exports = {
       g.vibrate && "• Rung: phản hồi rung khi thao tác"),
     (g) => g.localOnly && S("Lưu trữ và xóa",
       "Thông tin lưu trên thiết bị bị xóa ngay khi người chơi xóa ứng dụng hoặc xóa dữ liệu ứng dụng. Studio không lưu giữ bản sao thông tin trò chơi nào khác.",
+      g.saveTransfer && "Nếu thiết bị bật sao lưu Google, dữ liệu trò chơi (tiến trình, biệt danh, thành tích, tiền tệ, cài đặt và các lựa chọn về điều khoản, quảng cáo) có thể được sao lưu ở dạng mã hóa vào Tài khoản Google của người chơi. Google quản lý bản sao lưu này và Studio không thể đọc; có thể tắt trong cài đặt sao lưu của thiết bị. Tệp người chơi xuất được lưu ở nơi người chơi chọn và không gửi đến Studio. Đặt lại dữ liệu trò chơi sẽ xóa dữ liệu trên thiết bị; bản sao lưu Google hiện có sẽ được thay thế ở lần sao lưu tiếp theo.",
       "Email liên hệ sẽ bị xóa vĩnh viễn khỏi hộp thư trong vòng một năm sau khi trả lời."),
     (g) => S("Biện pháp bảo đảm an toàn",
-      "Studio không vận hành máy chủ lưu trữ thông tin cá nhân và chỉ lưu thông tin trò chơi trên thiết bị của người chơi.",
+      "Studio không vận hành máy chủ lưu trữ thông tin cá nhân và lưu thông tin trò chơi trên thiết bị của người chơi.",
       "Việc truyền dữ liệu của Trò chơi và SDK quảng cáo được mã hóa (HTTPS), và ứng dụng chỉ yêu cầu những quyền thiết bị tối thiểu cần cho chức năng. Email liên hệ chỉ do đơn vị vận hành đọc."),
     (g) => S("Trẻ em",
       "Trò chơi không hướng đến trẻ em dưới 14 tuổi. Trẻ em dưới 14 tuổi (từ dưới 13 đến dưới 16 tuổi tùy quốc gia) nên sử dụng với sự đồng ý của người đại diện theo pháp luật, và Studio không trực tiếp thu thập thông tin cá nhân của trẻ em.",
