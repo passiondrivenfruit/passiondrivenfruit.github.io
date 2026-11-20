@@ -4,9 +4,9 @@ const GOOGLE = "Norme sulla privacy di Google: https://policies.google.com/priva
 const MONTHS = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
 
 module.exports = {
-  // Written for games like Minesweeku only: other combinations of the flags below need the
+  // Written for Minesweeku and Minesweeper (v4) only: other combinations of the flags below need the
   // alternative sentences added first (see ko/en/ja/zh), and the build refuses them until then.
-  only: { banner: false, ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: false, saveTransfer: true, adsDataConsent: true },
+  only: { ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: false, adsDataConsent: true },
   ui: {
     languageName: "Italiano",
     termsTitle: (n) => `Termini di servizio di ${n}`,
@@ -39,7 +39,7 @@ module.exports = {
       "Lo Studio può modificarne i criteri di assegnazione (tempi di ricarica, limiti, numero di premi, ecc.) per la gestione del Gioco, dandone avviso nel Gioco o sul sito prima dell'applicazione."),
     (g) => g.iap && S("Articoli a pagamento", "Contenuto, prezzo, pagamento e rimborso degli articoli a pagamento seguono la schermata di acquisto e le norme dello store."),
     (g) => g.ads && S("Pubblicità",
-      "Il Gioco mostra pubblicità tramite Google AdMob. Alla fine di una partita può comparire un annuncio a schermo intero, e il giocatore può scegliere di guardare annunci con premio.",
+      g.banner ? "Il Gioco mostra pubblicità tramite Google AdMob. Possono comparire banner in alto e in basso sullo schermo e annunci a schermo intero dopo una partita, e il giocatore può scegliere di guardare annunci con premio." : "Il Gioco mostra pubblicità tramite Google AdMob. Alla fine di una partita può comparire un annuncio a schermo intero, e il giocatore può scegliere di guardare annunci con premio.",
       g.adsDataConsent && "Gli annunci vengono mostrati solo se il giocatore accetta di condividere i dati pubblicitari. Si può giocare anche senza accettare, ma senza annunci né premi degli annunci.",
       "Il premio è concesso solo se l'annuncio con premio viene guardato fino alla fine, e il loro numero può essere limitato.",
       "Il giocatore può scegliere se ricevere annunci personalizzati; i dettagli sono nell'Informativa sulla privacy.",

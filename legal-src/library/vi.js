@@ -3,9 +3,9 @@ const S = (h, ...p) => ({ h, p: p.flat().filter(Boolean) });
 const GOOGLE = "Chính sách quyền riêng tư của Google: https://policies.google.com/privacy · Cách Google sử dụng thông tin từ các trang web đối tác: https://policies.google.com/technologies/partner-sites";
 
 module.exports = {
-  // Written for games like Minesweeku only: other combinations of the flags below need the
+  // Written for Minesweeku and Minesweeper (v4) only: other combinations of the flags below need the
   // alternative sentences added first (see ko/en/ja/zh), and the build refuses them until then.
-  only: { banner: false, ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: false, saveTransfer: true, adsDataConsent: true },
+  only: { ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: false, adsDataConsent: true },
   ui: {
     languageName: "Tiếng Việt",
     termsTitle: (n) => `Điều khoản dịch vụ ${n}`,
@@ -38,7 +38,7 @@ module.exports = {
       "Studio có thể thay đổi tiêu chí cấp phát (thời gian hồi, giới hạn sở hữu, số lần thưởng, v.v.) để vận hành Trò chơi và sẽ thông báo trong Trò chơi hoặc trên trang web trước khi áp dụng."),
     (g) => g.iap && S("Vật phẩm trả phí", "Nội dung, giá, thanh toán và hoàn tiền của vật phẩm trả phí tuân theo màn hình mua hàng và chính sách của cửa hàng ứng dụng."),
     (g) => g.ads && S("Quảng cáo",
-      "Trò chơi hiển thị quảng cáo qua Google AdMob. Quảng cáo toàn màn hình có thể xuất hiện khi kết thúc ván, và người chơi có thể chọn xem quảng cáo có thưởng.",
+      g.banner ? "Trò chơi hiển thị quảng cáo qua Google AdMob. Quảng cáo biểu ngữ có thể xuất hiện ở đầu và cuối màn hình, quảng cáo toàn màn hình có thể xuất hiện sau khi kết thúc ván, và người chơi có thể chọn xem quảng cáo có thưởng." : "Trò chơi hiển thị quảng cáo qua Google AdMob. Quảng cáo toàn màn hình có thể xuất hiện khi kết thúc ván, và người chơi có thể chọn xem quảng cáo có thưởng.",
       g.adsDataConsent && "Quảng cáo chỉ hiển thị khi người chơi đồng ý cung cấp dữ liệu quảng cáo. Không đồng ý vẫn chơi được, nhưng không dùng được quảng cáo và phần thưởng quảng cáo.",
       "Phần thưởng chỉ được cấp khi xem hết quảng cáo có thưởng, và số lần xem có thể bị giới hạn.",
       "Người chơi có thể chọn có nhận quảng cáo được cá nhân hóa hay không; xem chi tiết trong Chính sách quyền riêng tư.",
