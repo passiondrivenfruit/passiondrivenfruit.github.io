@@ -38,7 +38,7 @@ module.exports = {
       "The Studio may change how they are given (refill time, holding limits, number of rewards and so on) to operate the Game, and announces such changes in the Game or on its website before they apply."),
     (g) => g.iap && S("Paid items", "The content, price, payment and refunds of paid items follow the purchase screen and the app store's policies."),
     (g) => g.ads && S("Advertising",
-      g.banner ? "The Game shows ads through Google AdMob. Banner ads may appear at the top and bottom of the screen and full-screen ads after a game, and players may choose to watch ads that give rewards." : "The Game shows ads through Google AdMob. A full-screen ad may appear when a game ends, and players may choose to watch ads that give rewards.",
+      g.banner ? "The Game shows ads through Google AdMob. Banner ads at the top and bottom of the screen, ads inside the results screen, and full-screen ads when leaving the results screen or quitting a game may appear, and players may choose to watch ads that give rewards." : "The Game shows ads through Google AdMob. A full-screen ad may appear when a game ends, and players may choose to watch ads that give rewards.",
       g.adsDataConsent && "Ads are shown only if the player agrees to share ad data. The Game can be played without agreeing, but ads and ad rewards are then unavailable.",
       "Rewards are given only when a rewarded ad is watched to the end, and the number of rewarded ads may be limited.",
       g.adsChoice ? "Players can choose whether to receive personalized ads; see the Privacy Policy for details." : "Personalized ads can be limited with the advertising ID in the device settings; see the Privacy Policy for details.",
