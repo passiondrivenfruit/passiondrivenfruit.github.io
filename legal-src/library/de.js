@@ -39,7 +39,7 @@ module.exports = {
       "Das Studio kann die Vergaberegeln (Auffüllzeit, Obergrenzen, Anzahl der Belohnungen usw.) für den Spielbetrieb ändern und kündigt dies vorher im Spiel oder auf der Website an."),
     (g) => g.iap && S("Kostenpflichtige Inhalte", "Inhalt, Preis, Zahlung und Erstattung kostenpflichtiger Inhalte richten sich nach dem Kaufbildschirm und den Richtlinien des App-Stores."),
     (g) => g.ads && S("Werbung",
-      g.banner ? "Das Spiel zeigt Werbung über Google AdMob. Oben und unten auf dem Bildschirm können Banner und nach einer Partie Vollbildanzeigen erscheinen, und Spieler können Werbung mit Belohnung freiwillig ansehen." : "Das Spiel zeigt Werbung über Google AdMob. Am Ende einer Partie kann eine Vollbildanzeige erscheinen, und Spieler können Werbung mit Belohnung freiwillig ansehen.",
+      g.banner ? "Das Spiel zeigt Werbung über Google AdMob. Es können Banner oben und unten auf dem Bildschirm, Anzeigen im Ergebnisbildschirm sowie Vollbildanzeigen beim Verlassen des Ergebnisbildschirms oder beim Abbrechen einer Partie erscheinen, und Spieler können Werbung mit Belohnung freiwillig ansehen." : "Das Spiel zeigt Werbung über Google AdMob. Am Ende einer Partie kann eine Vollbildanzeige erscheinen, und Spieler können Werbung mit Belohnung freiwillig ansehen.",
       g.adsDataConsent && "Werbung wird nur angezeigt, wenn der Spieler der Weitergabe von Werbedaten zustimmt. Das Spiel ist auch ohne Zustimmung nutzbar, dann aber ohne Werbung und Werbebelohnungen.",
       "Belohnungen gibt es nur, wenn die Werbung mit Belohnung vollständig angesehen wird; ihre Anzahl kann begrenzt sein.",
       "Spieler können wählen, ob sie personalisierte Werbung erhalten; Einzelheiten stehen in der Datenschutzerklärung.",

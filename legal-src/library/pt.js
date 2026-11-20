@@ -39,7 +39,7 @@ module.exports = {
       "O Estúdio pode mudar os critérios de concessão (tempo de recarga, limites, número de recompensas etc.) para operar o Jogo e avisará no Jogo ou no site antes de aplicá-los."),
     (g) => g.iap && S("Itens pagos", "Conteúdo, preço, pagamento e reembolso de itens pagos seguem a tela de compra e as políticas da loja de aplicativos."),
     (g) => g.ads && S("Publicidade",
-      g.banner ? "O Jogo exibe anúncios pelo Google AdMob. Banners podem aparecer na parte superior e inferior da tela, e anúncios em tela cheia após uma partida, e o jogador pode escolher assistir a anúncios premiados." : "O Jogo exibe anúncios pelo Google AdMob. Um anúncio em tela cheia pode aparecer ao fim de uma partida, e o jogador pode escolher assistir a anúncios premiados.",
+      g.banner ? "O Jogo exibe anúncios pelo Google AdMob. Podem aparecer banners na parte superior e inferior da tela, anúncios na tela de resultados e anúncios em tela cheia ao sair da tela de resultados ou abandonar uma partida, e o jogador pode escolher assistir a anúncios premiados." : "O Jogo exibe anúncios pelo Google AdMob. Um anúncio em tela cheia pode aparecer ao fim de uma partida, e o jogador pode escolher assistir a anúncios premiados.",
       g.adsDataConsent && "Os anúncios só são exibidos se o jogador concordar em compartilhar os dados de anúncios. É possível jogar sem concordar, mas sem anúncios nem recompensas de anúncios.",
       "A recompensa só é concedida se o anúncio premiado for assistido até o fim, e a quantidade pode ser limitada.",
       "O jogador pode escolher se quer receber anúncios personalizados; veja os detalhes na Política de privacidade.",

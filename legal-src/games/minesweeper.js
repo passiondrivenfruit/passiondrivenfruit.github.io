@@ -1,14 +1,14 @@
 // Minesweeper – Find and Seek (com.jnk.minesweeper, on Google Play since February 2026).
 // Facts from the app repository (PassionDrivenFruit-Studio/Minesweeper, v4.0.0 Godot rewrite: docs/AD_CONSENT.md,
-// store/google-play/listing.md): Google Mobile Ads (top and bottom banners, full-screen ads, one rewarded ad to
-// continue a game), the same in-game consent flow as Minesweeku (terms screen with optional ad-data and
+// store/google-play/listing.md): Google Mobile Ads (top and bottom banners, native ads in the results screen,
+// full-screen ads when leaving the results screen or quitting a game, optional rewarded ads for continue and hints), the same in-game consent flow as Minesweeku (terms screen with optional ad-data and
 // personalized-ads choices, UMP only after ad-data consent), no purchases, no account or server, settings and
 // records stored on the device, permissions INTERNET / ACCESS_NETWORK_STATE / AD_ID / VIBRATE, allowBackup="true".
 // The game downloads /legal/minesweeper.json and asks players to agree again when `version` goes up.
 module.exports = {
   id: "minesweeper",
   order: 1,
-  version: 3,
+  version: 4, // 4: native ads in the results screen, full-screen ad when quitting a game
   effective: "2026-11-27",
   draft: false, // replaces the policy that has been live at /<lang>/privacy.html since 2026-05-03
   languages: ["ko", "en", "ja", "zh", "vi", "fr", "es", "de", "it", "pt", "ar"],
@@ -35,8 +35,9 @@ module.exports = {
     nickname: false, notifications: false, vibrate: true, noBackup: false // allowBackup="true"
   },
   card: {
-    frame: "#3f6a4a",
+    frame: "#363c48", // gunmetal, v4 night theme
     icon: "/assets/ico/minesweeper.webp",
+    pixelated: true,
     stores: [{ id: "google-play", url: "https://play.google.com/store/apps/details?id=com.jnk.minesweeper" }],
     status: "available",
     // Store screenshots of v4.0.0 (store/google-play/screenshots/<locale>/01-04.png), 720×1280 WebP.
