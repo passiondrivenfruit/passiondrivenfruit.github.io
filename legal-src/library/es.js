@@ -4,9 +4,9 @@ const GOOGLE = "Política de privacidad de Google: https://policies.google.com/p
 const MONTHS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
 
 module.exports = {
-  // Written for games like Minesweeku only: other combinations of the flags below need the
+  // Written for Minesweeku and Minesweeper (v4) only: other combinations of the flags below need the
   // alternative sentences added first (see ko/en/ja/zh), and the build refuses them until then.
-  only: { banner: false, ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: false, saveTransfer: true, adsDataConsent: true },
+  only: { ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: false, adsDataConsent: true },
   ui: {
     languageName: "Español",
     termsTitle: (n) => `Términos de servicio de ${n}`,
@@ -39,7 +39,7 @@ module.exports = {
       "El Estudio puede cambiar los criterios de entrega (tiempo de recarga, límites, número de recompensas, etc.) para gestionar el Juego y lo anunciará en el Juego o en su sitio web antes de aplicarlos."),
     (g) => g.iap && S("Artículos de pago", "El contenido, el precio, el pago y los reembolsos de los artículos de pago se rigen por la pantalla de compra y las políticas de la tienda de aplicaciones."),
     (g) => g.ads && S("Publicidad",
-      "El Juego muestra anuncios mediante Google AdMob. Puede aparecer un anuncio a pantalla completa al terminar una partida, y el jugador puede elegir ver anuncios con recompensa.",
+      g.banner ? "El Juego muestra anuncios mediante Google AdMob. Pueden aparecer banners en la parte superior e inferior de la pantalla y anuncios a pantalla completa después de una partida, y el jugador puede elegir ver anuncios con recompensa." : "El Juego muestra anuncios mediante Google AdMob. Puede aparecer un anuncio a pantalla completa al terminar una partida, y el jugador puede elegir ver anuncios con recompensa.",
       g.adsDataConsent && "Los anuncios solo se muestran si el jugador acepta compartir los datos publicitarios. Se puede jugar sin aceptar, pero sin anuncios ni recompensas por anuncios.",
       "La recompensa solo se entrega si el anuncio con recompensa se ve hasta el final, y su número puede estar limitado.",
       "El jugador puede elegir si recibe anuncios personalizados; los detalles están en la Política de privacidad.",

@@ -4,9 +4,9 @@ const GOOGLE = "Datenschutzerklärung von Google: https://policies.google.com/pr
 const MONTHS = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
 
 module.exports = {
-  // Written for games like Minesweeku only: other combinations of the flags below need the
+  // Written for Minesweeku and Minesweeper (v4) only: other combinations of the flags below need the
   // alternative sentences added first (see ko/en/ja/zh), and the build refuses them until then.
-  only: { banner: false, ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: false, saveTransfer: true, adsDataConsent: true },
+  only: { ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: false, adsDataConsent: true },
   ui: {
     languageName: "Deutsch",
     termsTitle: (n) => `${n} – Nutzungsbedingungen`,
@@ -39,7 +39,7 @@ module.exports = {
       "Das Studio kann die Vergaberegeln (Auffüllzeit, Obergrenzen, Anzahl der Belohnungen usw.) für den Spielbetrieb ändern und kündigt dies vorher im Spiel oder auf der Website an."),
     (g) => g.iap && S("Kostenpflichtige Inhalte", "Inhalt, Preis, Zahlung und Erstattung kostenpflichtiger Inhalte richten sich nach dem Kaufbildschirm und den Richtlinien des App-Stores."),
     (g) => g.ads && S("Werbung",
-      "Das Spiel zeigt Werbung über Google AdMob. Am Ende einer Partie kann eine Vollbildanzeige erscheinen, und Spieler können Werbung mit Belohnung freiwillig ansehen.",
+      g.banner ? "Das Spiel zeigt Werbung über Google AdMob. Oben und unten auf dem Bildschirm können Banner und nach einer Partie Vollbildanzeigen erscheinen, und Spieler können Werbung mit Belohnung freiwillig ansehen." : "Das Spiel zeigt Werbung über Google AdMob. Am Ende einer Partie kann eine Vollbildanzeige erscheinen, und Spieler können Werbung mit Belohnung freiwillig ansehen.",
       g.adsDataConsent && "Werbung wird nur angezeigt, wenn der Spieler der Weitergabe von Werbedaten zustimmt. Das Spiel ist auch ohne Zustimmung nutzbar, dann aber ohne Werbung und Werbebelohnungen.",
       "Belohnungen gibt es nur, wenn die Werbung mit Belohnung vollständig angesehen wird; ihre Anzahl kann begrenzt sein.",
       "Spieler können wählen, ob sie personalisierte Werbung erhalten; Einzelheiten stehen in der Datenschutzerklärung.",

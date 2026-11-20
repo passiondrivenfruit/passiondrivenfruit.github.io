@@ -4,9 +4,9 @@ const GOOGLE = "Règles de confidentialité de Google : https://policies.google.
 const MONTHS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
 module.exports = {
-  // Written for games like Minesweeku only: other combinations of the flags below need the
+  // Written for Minesweeku and Minesweeper (v4) only: other combinations of the flags below need the
   // alternative sentences added first (see ko/en/ja/zh), and the build refuses them until then.
-  only: { banner: false, ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: false, saveTransfer: true, adsDataConsent: true },
+  only: { ump: true, adsChoice: true, inGameConsent: true, legalDownload: true, noBackup: false, adsDataConsent: true },
   ui: {
     languageName: "Français",
     termsTitle: (n) => `Conditions d'utilisation de ${n}`,
@@ -39,7 +39,7 @@ module.exports = {
       "Le Studio peut modifier les règles d'attribution (temps de recharge, plafonds, nombre de récompenses, etc.) pour l'exploitation du Jeu et l'annonce dans le Jeu ou sur son site avant application."),
     (g) => g.iap && S("Articles payants", "Le contenu, le prix, le paiement et le remboursement des articles payants suivent l'écran d'achat et les règles de la boutique d'applications."),
     (g) => g.ads && S("Publicité",
-      "Le Jeu affiche des publicités via Google AdMob. Une publicité plein écran peut apparaître à la fin d'une partie, et le joueur peut choisir de regarder des publicités avec récompense.",
+      g.banner ? "Le Jeu affiche des publicités via Google AdMob. Des bannières peuvent apparaître en haut et en bas de l'écran, et une publicité plein écran après une partie ; le joueur peut choisir de regarder des publicités avec récompense." : "Le Jeu affiche des publicités via Google AdMob. Une publicité plein écran peut apparaître à la fin d'une partie, et le joueur peut choisir de regarder des publicités avec récompense.",
       g.adsDataConsent && "Les publicités ne s'affichent que si le joueur accepte de partager les données publicitaires. Le Jeu reste utilisable sans cet accord, mais sans publicités ni récompenses publicitaires.",
       "La récompense n'est accordée que si la publicité avec récompense est regardée jusqu'au bout, et leur nombre peut être limité.",
       "Le joueur peut choisir de recevoir ou non des publicités personnalisées ; voir la Politique de confidentialité.",
