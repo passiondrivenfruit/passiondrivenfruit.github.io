@@ -140,12 +140,11 @@ for (const game of games) for (const [doc, byLang] of Object.entries(game.aliase
 // Studio legal drafts (Korean source pages for Pinfinity Pinferno's server consent URLs).
 const studioDrafts = [
   "ko/legal/terms.html", "ko/legal/privacy.html", "ko/legal/pinballatro-consent.html", "ko/legal/pinfinity-pinferno-consent.html",
-  "ko/legal/draft-1/terms.html", "ko/legal/draft-1/privacy.html", "ko/legal/draft-1/pinballatro-consent.html",
   "ko/legal/draft-2/terms.html", "ko/legal/draft-2/privacy.html", "ko/legal/draft-2/pinfinity-pinferno-consent.html",
   "ko/legal/draft-3/terms.html"
 ];
 const draftCanonical = (rel) => {
-  if (/\/draft-[123]\//.test(rel)) return `/${rel}`;
+  if (/\/draft-[23]\//.test(rel)) return `/${rel}`;
   if (rel.endsWith("consent.html")) return "/ko/legal/draft-2/pinfinity-pinferno-consent.html";
   return rel.endsWith("terms.html") ? "/ko/legal/draft-3/terms.html" : `/ko/legal/draft-2/${path.basename(rel)}`;
 };
@@ -155,9 +154,8 @@ for (const rel of studioDrafts) {
   if (!html) continue;
   checkCommon(rel, html, { lang: "ko", canonical: draftCanonical(rel) });
   check(html.includes('<meta name="robots" content="noindex, nofollow">') && html.includes("검토용 초안"), `${rel}: legal draft must be noindex with its notice`);
-  if (rel.includes("/draft-1/")) check(html.includes("PinBallatro"), `${rel}: historical draft-1 snapshot changed its original project name`);
-  if (!rel.includes("/draft-1/") && rel.includes("consent")) check(html.includes("Pinfinity Pinferno"), `${rel}: consent pages must use the public game name`);
-  if (rel.endsWith("/terms.html") && !rel.includes("/draft-1/") && !rel.includes("/draft-2/")) {
+  if (rel.includes("consent")) check(html.includes("Pinfinity Pinferno!"), `${rel}: consent pages must use the public game name`);
+  if (rel.endsWith("/terms.html") && !rel.includes("/draft-2/")) {
     check(html.includes("자동화 플레이어 운영") && html.includes("봇에게는 랭킹 보상이 지급되지 않으며") && html.includes("봇을 제외한 실제 이용자 간의 순위"), `${rel}: current terms must include the automation-player section`);
     check(html.includes("2026년 11월 11일") && html.includes("시행일:</strong> 미정"), `${rel}: draft-3 dates are incorrect`);
   }
