@@ -1,4 +1,4 @@
-// Pinfinity Pinferno: home page card only, for now.
+// Pinfinity Pinferno!: home page card only, for now.
 // Its terms and privacy policy are not built from the shared paragraph library: the game has accounts,
 // a server and social features the library does not cover yet. Its Korean review drafts stay at
 // /ko/legal/terms.html, /ko/legal/privacy.html and /ko/legal/pinfinity-pinferno-consent.html (noindex).
@@ -8,7 +8,7 @@ module.exports = {
   id: "pinfinity-pinferno",
   order: 3,
   documents: false,
-  name: { default: "Pinfinity Pinferno" },
+  name: { default: "Pinfinity Pinferno!" },
   card: {
     frame: "#c0652b",
     icon: "/assets/ico/pinfinity-pinferno.webp",
