@@ -12,12 +12,13 @@ module.exports = {
   draft: false,
   // The game's own UI languages; every one gets both documents. Korean is the original.
   languages: ["ko", "en", "zh", "ja", "vi", "fr", "es", "de", "it", "pt", "ar"],
-  name: { ko: "마인스위쿠", default: "Minesweeku" },
+  // "마인스위쿠" as pronounced in each script (game #227, #228); Latin-script languages use the default.
+  name: { ko: "마인스위쿠", ja: "マインスウィク", zh: "麦因斯维酷", ar: "ماينسويكو", default: "Minesweeku" },
   about: {
     ko: "스도쿠와 지뢰찾기를 합친 논리 퍼즐 게임",
     en: "a logic puzzle game that combines Sudoku and Minesweeper",
     zh: "结合数独与扫雷的逻辑益智游戏",
-    ja: "数独とマインスイーパーを組み合わせたロジックパズルゲーム",
+    ja: "ナンプレとマインスイーパーを組み合わせたロジックパズルゲーム", // 数独 is a Nikoli trademark in Japan
     vi: "trò chơi giải đố logic kết hợp Sudoku và Dò mìn",
     fr: "un jeu de logique qui associe le sudoku et le démineur",
     es: "un juego de lógica que combina el sudoku y el buscaminas",
@@ -49,7 +50,7 @@ module.exports = {
     text: {
       ko: "스도쿠처럼 행·열·3×3 박스의 지뢰 수를 맞추며 추리하는 새로운 지뢰찾기 퍼즐. 판마다 새로 만들어지고 모두 논리만으로 풀 수 있어요.",
       en: "Minesweeper meets Sudoku: deduce mines from row, column and 3×3 box counts. Every board is new and solvable by logic alone.",
-      ja: "マインスイーパー×数独。行・列・3×3ボックスの地雷数から推理するパズル。盤面は毎回新しく、論理だけで解けます。",
+      ja: "マインスイーパー×ナンプレ。行・列・3×3ボックスの地雷数から推理するパズル。盤面は毎回新しく、論理だけで解けます。",
       zh: "扫雷遇上数独：根据行、列和 3×3 宫格的地雷数推理出所有地雷。每局都是新棋盘，仅凭逻辑即可解开。",
       vi: "Dò mìn kết hợp Sudoku: suy luận vị trí mìn từ số mìn của hàng, cột và ô 3×3. Mỗi bàn đều mới và giải được chỉ bằng logic.",
       fr: "Le démineur rencontre le sudoku : trouvez les mines par lignes, colonnes et carrés 3×3. Chaque grille est nouvelle et se résout par la logique.",
