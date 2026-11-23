@@ -142,7 +142,7 @@ for (const game of games) for (const [doc, byLang] of Object.entries(game.aliase
 const studioDrafts = [
   "ko/legal/terms.html", "ko/legal/privacy.html", "ko/legal/pinballatro-consent.html", "ko/legal/pinfinity-pinferno-consent.html",
   "ko/legal/draft-2/terms.html", "ko/legal/draft-2/privacy.html", "ko/legal/draft-2/pinfinity-pinferno-consent.html",
-  "ko/legal/draft-3/terms.html"
+  "ko/legal/draft-3/terms.html", "ko/legal/draft-3/privacy.html", "ko/legal/draft-3/pinfinity-pinferno-consent.html", "ko/legal/draft-3/support.html"
 ];
 const draftCanonical = (rel) => {
   if (/\/draft-[23]\//.test(rel)) return `/${rel}`;
