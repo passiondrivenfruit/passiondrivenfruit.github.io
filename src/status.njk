@@ -1,0 +1,39 @@
+---
+pagination:
+  data: site.locales
+  size: 1
+  alias: locale
+permalink: "{{ status.paths[locale.code] | replace('/', '', 1) }}index.html"
+layout: layouts/base.njk
+pageType: status
+eleventyComputed:
+  language: "{{ locale.code }}"
+  canonicalPath: "{{ status.paths[locale.code] }}"
+---
+{% set s = status.copy[language] %}
+{% set notice = status.noticeFor(language) %}
+<main id="main-content" class="container status-page">
+  <section class="status-alert" role="status">
+    <p class="status-lead">{{ s.lead }}</p>
+    <p>{{ s.retry }}</p>
+  </section>
+  <section aria-labelledby="notice-heading">
+    <h2 id="notice-heading">{{ s.noticeHeading }}</h2>
+    {% if notice %}
+    <article class="status-notice">
+      {% if notice.title %}<h3>{{ notice.title }}</h3>{% endif %}
+      {% for line in notice.lines %}<p>{{ line }}</p>{% endfor %}
+      {% if notice.updated %}<p class="status-updated">{{ s.updated }} {{ notice.updated }}</p>{% endif %}
+    </article>
+    {% else %}
+    <p class="status-notice is-empty">{{ s.noNotice }}</p>
+    {% endif %}
+  </section>
+  <section aria-labelledby="channels-heading">
+    <h2 id="channels-heading">{{ s.channelsHeading }}</h2>
+    <ul class="status-channels">
+      <li><a href="https://x.com/PDF_Studio" target="_blank" rel="noopener noreferrer">{{ s.x }}</a></li>
+      <li><a href="mailto:{{ site.email }}">{{ s.email }}: {{ site.email }}</a></li>
+    </ul>
+  </section>
+</main>
