@@ -9,6 +9,7 @@ const origin = "https://pdf-studio.co.kr";
 const site = requireCjs(path.resolve("src/_data/site.js"));
 const legalDocs = requireCjs(path.resolve("src/_data/legalDocs.js"));
 const history = requireCjs(path.resolve("src/_data/history.js"));
+const status = requireCjs(path.resolve("src/_data/status.js"));
 const legalRoot = path.resolve("legal-src");
 const library = Object.fromEntries(readdirSync(path.join(legalRoot, "library")).map((f) => [path.basename(f, ".js"), requireCjs(path.join(legalRoot, "library", f))]));
 const allGames = readdirSync(path.join(legalRoot, "games")).map((f) => requireCjs(path.join(legalRoot, "games", f)));
@@ -193,6 +194,22 @@ for (const game of games) {
 
 const expectedStatic = ["favicon.ico", "assets/ico/favicon-32.png", "assets/ico/favicon-192.png", "assets/ico/apple-touch-icon.png", "site.js", "style.css", "assets/ico/minesweeku.webp", "assets/ico/minesweeper.webp", "assets/ico/pinfinity-pinferno.webp", "assets/ico/android.webp", "CNAME", "app-ads.txt", "google77a4653943ed2177.html", "robots.txt", "sitemap.xml", "assets/header/minesweeper.jpg", "assets/ico/minesweeper.png", "assets/ico/minesweeku.png", "assets/ico/android.png"];
 for (const file of expectedStatic) check(await exists(path.join(root, file)), `Missing public file: ${file}`);
+// Server status page: the app opens /<lang>/status/ when the game server is down, so every language must build.
+for (const loc of site.locales) {
+  const href = status.paths[loc.code];
+  const rel = relOf(href) + "index.html";
+  const html = await read(rel);
+  check(html.length > 0, `Missing status page: ${rel}`);
+  if (!html) continue;
+  checkCommon(rel, html, { lang: loc.htmlLang, dir: loc.dir ?? "ltr", canonical: href });
+  const s = status.copy[loc.code];
+  check(html.includes(`<h1>${escape(s.heading)}</h1>`) && html.includes(escape(s.lead)), `${rel}: missing status heading or message`);
+  const notice = status.noticeFor(loc.code);
+  check(notice ? notice.lines.every((line) => html.includes(escape(line))) : html.includes(escape(s.noNotice)), `${rel}: notice is not shown`);
+  check(html.includes("https://x.com/PDF_Studio") && html.includes(`mailto:${site.email}`), `${rel}: official channel or contact link is missing`);
+  await checkLinks(rel, html);
+}
+
 check((await read("CNAME")).trim() === "pdf-studio.co.kr", "CNAME does not point to pdf-studio.co.kr");
 const robots = await read("robots.txt");
 check(robots.includes(`${origin}/sitemap.xml`) && !robots.includes("passiondrivenfruit.github.io"), "robots.txt must reference only the canonical sitemap");

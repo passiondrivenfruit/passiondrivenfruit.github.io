@@ -156,6 +156,20 @@ a.card-attr:hover { background: radial-gradient(circle at 35% 30%, #fff, #b9d79a
 .timeline-body h3 { margin-top: 0.3rem; font-size: 1.05rem; }
 .timeline-body p { margin: 0.25rem 0 0; color: var(--muted); }
 
+/* Server status page: opened by the app when the game server cannot be reached */
+.status-page { padding-top: 0; }
+.status-alert { padding: 1rem 1.1rem; border: 1px solid #f0c36d; border-radius: 0.7rem; background: #fff8e6; }
+.status-alert p { margin: 0.35rem 0 0; }
+.status-alert .status-lead { margin: 0; font-size: 1.15rem; font-weight: 700; }
+.status-notice { padding: 0.9rem 1.1rem; border: 1px solid var(--border); border-radius: 0.7rem; background: var(--surface); overflow-wrap: anywhere; }
+.status-notice h3 { margin: 0 0 0.4rem; font-size: 1.05rem; }
+.status-notice p { margin: 0.3rem 0 0; }
+.status-notice.is-empty { margin: 0; color: var(--muted); }
+.status-updated { color: var(--muted); font-size: 0.9rem; }
+.status-channels { margin: 0; padding: 0; list-style: none; }
+.status-channels li + li { margin-top: 0.5rem; }
+.status-channels a { display: block; padding: 0.8rem 1rem; border: 1px solid var(--border); border-radius: 0.7rem; font-weight: 600; overflow-wrap: anywhere; }
+
 /* Screenshot gallery overlay */
 .gallery { width: min(96vw, 1200px); max-height: 94vh; padding: 0; border: 0; border-radius: 0.9rem; background: #11161c; color: #fff; }
 .gallery::backdrop { background: rgba(8, 11, 15, 0.82); }

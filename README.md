@@ -29,3 +29,7 @@ Each game's terms and privacy policy are built from the shared paragraph library
 The Korean studio legal drafts for Pinfinity Pinferno! remain at `/ko/legal/terms.html`, `/ko/legal/privacy.html` and `/ko/legal/pinfinity-pinferno-consent.html` (alias `/ko/legal/pinballatro-consent.html`), with versioned `draft-2` and `draft-3` snapshots (`draft-1`, which used the old project name, was removed). They are `noindex` review drafts. The sitemap lists the home pages and the game documents that are not drafts. The canonical host is `https://pdf-studio.co.kr`.
 
 The GitHub Actions workflow builds and validates `dist/` on pull requests and pushes to `main` or `master`; only pushes and manual runs deploy. In the repository, set **Settings → Pages → Build and deployment → Source** to **GitHub Actions** to enable the workflow deployment.
+
+## Server status page
+
+`/<lang>/status/` (for example `https://pdf-studio.co.kr/ko/status/`) is the Pinfinity Pinferno! server status page. The app opens it when it cannot reach the game server; it is on GitHub Pages, so it stays up while the server is down. To post or clear a maintenance or outage notice, edit only `src/_data/statusNotice.js` and merge to `main`. A language without its own notice shows the English one, then the Korean one. GitHub Pages may serve the old page for up to about 10 minutes after a deploy.

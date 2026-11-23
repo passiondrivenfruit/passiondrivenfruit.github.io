@@ -2,13 +2,16 @@
 {% set copy = site.copy[language] %}
 {% set loc = null %}
 {% for l in site.locales %}{% if l.code == language %}{% set loc = l %}{% endif %}{% endfor %}
-{% set pagePaths = history.paths if pageType == 'history' else site.homePaths %}
+{% set pagePaths = history.paths if pageType == 'history' else (status.paths if pageType == 'status' else site.homePaths) %}
 {% if pageType == 'legal' %}
   {% set title = legalPageTitle %}
   {% set description = legalPageDescription %}
 {% elif pageType == 'history' %}
   {% set title = history.copy[language].title %}
   {% set description = history.copy[language].description %}
+{% elif pageType == 'status' %}
+  {% set title = status.copy[language].title %}
+  {% set description = status.copy[language].description %}
 {% else %}
   {% set title = copy.homeTitle %}
   {% set description = copy.homeDescription %}
@@ -59,6 +62,10 @@
     {% elif pageType == 'history' %}
     <div class="header-row">
       <h1>{{ history.copy[language].heading }}</h1>
+    </div>
+    {% elif pageType == 'status' %}
+    <div class="header-row">
+      <h1>{{ status.copy[language].heading }}</h1>
     </div>
     {% else %}
     <div class="header-row">
