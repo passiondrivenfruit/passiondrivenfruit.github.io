@@ -7,13 +7,13 @@
 module.exports = {
   id: "minesweeku",
   order: 2,
-  version: 4,
-  effective: "2026-11-26",
+  version: 5, // 5: coins and cosmetics, sharing, in-app updates, document download log, hi/ru
+  effective: "2026-11-27",
   draft: false,
   // The game's own UI languages; every one gets both documents. Korean is the original.
-  languages: ["ko", "en", "zh", "ja", "vi", "fr", "es", "de", "it", "pt", "ar"],
+  languages: ["ko", "en", "zh", "ja", "vi", "fr", "es", "de", "it", "pt", "ar", "hi", "ru"],
   // "마인스위쿠" as pronounced in each script (game #227, #228); Latin-script languages use the default.
-  name: { ko: "마인스위쿠", ja: "マインスウィク", zh: "麦因斯维酷", ar: "ماينسويكو", default: "Minesweeku" },
+  name: { ko: "마인스위쿠", ja: "マインスウィク", zh: "麦因斯维酷", ar: "ماينسويكو", hi: "माइनस्वीकू", ru: "Майнсвику", default: "Minesweeku" },
   about: {
     ko: "스도쿠와 지뢰찾기를 합친 논리 퍼즐 게임",
     en: "a logic puzzle game that combines Sudoku and Minesweeper",
@@ -25,19 +25,21 @@ module.exports = {
     de: "ein Logikrätsel, das Sudoku und Minesweeper verbindet",
     it: "un gioco di logica che unisce sudoku e campo minato",
     pt: "um jogo de lógica que combina sudoku e campo minado",
-    ar: "لعبة ألغاز منطقية تجمع بين السودوكو وكاسحة الألغام"
+    ar: "لعبة ألغاز منطقية تجمع بين السودوكو وكاسحة الألغام",
+    hi: "सुडोकू और माइनस्वीपर को मिलाने वाला एक लॉजिक पहेली गेम",
+    ru: "логическая головоломка, объединяющая судоку и «Сапёра»"
   },
   currencies: {
-    ko: "입장권과 힌트", en: "tickets and hints", zh: "门票和提示", ja: "チケットとヒント", vi: "vé và gợi ý",
-    fr: "tickets et indices", es: "entradas y pistas", de: "Tickets und Hinweise", it: "biglietti e indizi",
-    pt: "ingressos e dicas", ar: "التذاكر والتلميحات"
+    ko: "입장권, 힌트와 코인", en: "tickets, hints and coins", zh: "门票、提示和金币", ja: "チケット、ヒントとコイン", vi: "vé, gợi ý và xu",
+    fr: "tickets, indices et pièces", es: "entradas, pistas y monedas", de: "Tickets, Hinweise und Münzen", it: "biglietti, indizi e monete",
+    pt: "ingressos, dicas e moedas", ar: "التذاكر والتلميحات والعملات", hi: "टिकट, संकेत और सिक्के", ru: "билеты, подсказки и монеты"
   },
   card: {
     frame: "#8a5a2b",
     icon: "/assets/ico/minesweeku.webp",
     pixelated: true,
     stores: [{ id: "google-play", url: "https://play.google.com/store/apps/details?id=com.pdf.minesweeku" }],
-    status: "coming", // switch to "available" once the Play listing is public
+    status: "available",
     screenshots: {
       ko: ["01", "02", "03", "04", "05"].map((n) => `/assets/games/minesweeku/ko-${n}.webp`),
       default: ["01", "02", "03", "04", "05"].map((n) => `/assets/games/minesweeku/en-${n}.webp`)
@@ -78,6 +80,10 @@ module.exports = {
     inGameConsent: true,  // players accept the terms in the game; changes ask again
     legalDownload: true,  // the game downloads these documents (needs the internet)
     adsDataConsent: true, // ad SDK starts only after the optional consent (game #184)
-    saveTransfer: true    // Android backup, file export/import and data reset (game #175)
+    saveTransfer: true,   // Android backup, file export/import and data reset (game #175)
+    cosmetics: true,      // coins buy board frames, tiles and signs (1.6.x)
+    share: true,          // result image share and friend invite via the Android share sheet
+    inAppUpdate: true,    // Google Play in-app updates (play app-update library)
+    legalHost: true       // the document download reaches GitHub Pages, which keeps access logs
   }
 };
