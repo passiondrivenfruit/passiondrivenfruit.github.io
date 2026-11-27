@@ -10,7 +10,8 @@
 const { locales } = require("./site.js");
 const minesweeper = require("../../legal-src/games/minesweeper.js");
 
-const games = { minesweeper };
+const minesweeku = require("../../legal-src/games/minesweeku.js");
+const games = { minesweeper, minesweeku };
 const pathOf = (code) => (code === "ko" ? "/history.html" : `/${code}/history.html`);
 
 const copy = {
@@ -43,6 +44,29 @@ const events = [
       zh: "工作室的第一款游戏在 Google Play 上线。", vi: "Trò chơi đầu tiên của studio ra mắt trên Google Play.", fr: "Le premier jeu du studio est sorti sur Google Play.",
       es: "El primer juego del estudio llegó a Google Play.", de: "Das erste Spiel des Studios erschien bei Google Play.", it: "Il primo gioco dello studio è arrivato su Google Play.",
       pt: "O primeiro jogo do estúdio chegou ao Google Play.", ar: "وصلت أولى ألعاب الاستوديو إلى Google Play."
+    }
+  },
+  {
+    date: "2026-11",
+    kind: "release",
+    game: "minesweeku",
+    title: {
+      ko: "마인스위쿠 출시", en: "Minesweeku launched", ja: "マインスウィク リリース",
+      zh: "麦因斯维酷 发布", vi: "Ra mắt Minesweeku", fr: "Sortie de Minesweeku",
+      es: "Lanzamiento de Minesweeku", de: "Minesweeku veröffentlicht", it: "Lancio di Minesweeku",
+      pt: "Lançamento de Minesweeku", ar: "إطلاق ماينسويكو"
+    },
+    text: {
+      ko: "스도쿠와 지뢰찾기를 합친 두 번째 게임을 Google Play에 출시했습니다.", en: "Our second game, a puzzle that combines Sudoku and Minesweeper, arrived on Google Play.",
+      ja: "ナンプレとマインスイーパーを組み合わせた2作目のゲームを Google Play でリリースしました。",
+      zh: "工作室的第二款游戏——结合数独与扫雷的益智游戏——在 Google Play 上线。",
+      vi: "Trò chơi thứ hai của studio, kết hợp Sudoku và Dò mìn, ra mắt trên Google Play.",
+      fr: "Le deuxième jeu du studio, qui associe sudoku et démineur, est sorti sur Google Play.",
+      es: "El segundo juego del estudio, que combina sudoku y buscaminas, llegó a Google Play.",
+      de: "Das zweite Spiel des Studios, eine Mischung aus Sudoku und Minesweeper, erschien bei Google Play.",
+      it: "Il secondo gioco dello studio, che unisce sudoku e campo minato, è arrivato su Google Play.",
+      pt: "O segundo jogo do estúdio, que combina sudoku e campo minado, chegou ao Google Play.",
+      ar: "وصلت ثاني ألعاب الاستوديو، التي تجمع بين السودوكو وكاسحة الألغام، إلى Google Play."
     }
   }
 ];
