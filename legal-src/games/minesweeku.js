@@ -40,10 +40,9 @@ module.exports = {
     pixelated: true,
     stores: [{ id: "google-play", url: "https://play.google.com/store/apps/details?id=com.pdf.minesweeku" }],
     status: "available",
-    screenshots: {
-      ko: ["01", "02", "03", "04", "05"].map((n) => `/assets/games/minesweeku/ko-${n}.webp`),
-      default: ["01", "02", "03", "04", "05"].map((n) => `/assets/games/minesweeku/en-${n}.webp`)
-    },
+    // Store screenshots of v1.6.2 (store/google-play/screenshots/<locale>/01-05.png), 1600×900 WebP.
+    screenshots: Object.fromEntries(["ko", "en", "ja", "zh", "vi", "fr", "es", "de", "it", "pt", "ar"]
+      .map((l) => [l, ["01", "02", "03", "04", "05"].map((n) => `/assets/games/minesweeku/${l}-${n}.webp`)])),
     genre: {
       ko: "퍼즐 / 로직", en: "Puzzle / Logic", ja: "パズル / ロジック", zh: "益智 / 逻辑", vi: "Giải đố / Logic",
       fr: "Puzzle / Logique", es: "Puzle / Lógica", de: "Puzzle / Logik", it: "Puzzle / Logica",
